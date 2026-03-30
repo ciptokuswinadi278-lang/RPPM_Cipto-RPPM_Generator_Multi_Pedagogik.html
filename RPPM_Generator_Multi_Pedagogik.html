@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPPM Generator Fase D — Multi-Pedagogik Offline</title>
+<style>
+:root{--primary:#1a4b8c;--primary-light:#2563b0;--accent:#e8a020;--bg:#f5f7fa;--bg-card:#fff;--border:#d1d9e0;--text:#1e293b;--text-muted:#64748b;--radius:10px;--shadow:0 2px 12px rgba(0,0,0,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.header{background:linear-gradient(135deg,#1a4b8c 0%,#2563b0 60%,#1e40af 100%);color:#fff;padding:28px 32px 24px;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.06)}
+.header h1{font-size:22px;font-weight:700}.header p{font-size:13px;opacity:.82;margin-top:5px}
+.badge{display:inline-block;background:var(--accent);color:#7c3a00;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:10px}
+.container{max-width:960px;margin:0 auto;padding:28px 20px 60px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:22px 24px;margin-bottom:20px;box-shadow:var(--shadow)}
+.card-title{font-size:15px;font-weight:700;color:var(--primary);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.card-title .icon{width:28px;height:28px;background:#eff6ff;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.form-row.triple{grid-template-columns:1fr 1fr 1fr}.form-row.single{grid-template-columns:1fr}
+@media(max-width:600px){.form-row,.form-row.triple{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:5px}
+label{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
+select,input,textarea{padding:9px 12px;border:1.5px solid var(--border);border-radius:7px;font-size:14px;font-family:inherit;color:var(--text);background:#f8fafc;transition:border .2s;outline:none;width:100%}
+select:focus,input:focus,textarea:focus{border-color:var(--primary-light);background:#fff}
+textarea{resize:vertical;min-height:70px}
+.info-box{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:12px 16px;font-size:13px;color:#78350f;margin-bottom:16px;line-height:1.6}
+.info-box.blue{background:#eff6ff;border-color:#93c5fd;color:#1e3a5f}
+.info-box.green{background:#f0fdf4;border-color:#86efac;color:#14532d}
+.info-box.purple{background:#f5f3ff;border-color:#c4b5fd;color:#4c1d95}
+.tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:2px solid var(--border);overflow-x:auto}
+.tab{padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;color:var(--text-muted);transition:all .15s;white-space:nowrap}
+.tab.active{color:var(--primary);border-color:var(--primary)}
+.tab-content{display:none}.tab-content.active{display:block}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.chip{padding:6px 12px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:#f8fafc;color:var(--text-muted);transition:all .15s;user-select:none}
+.chip:hover{border-color:var(--primary-light);color:var(--primary)}
+.chip.active{background:#eff6ff;border-color:var(--primary);color:var(--primary);font-weight:700}
+.btn-primary{width:100%;padding:14px;background:linear-gradient(135deg,var(--primary) 0%,var(--primary-light) 100%);color:#fff;border:none;border-radius:var(--radius);font-size:16px;font-weight:700;cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 14px rgba(26,75,140,.3);margin-top:6px}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,75,140,.4)}
+.btn-secondary{padding:9px 18px;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--text);transition:all .15s;font-family:inherit}
+.btn-secondary:hover{border-color:var(--primary);color:var(--primary)}
+.btn-accent{padding:9px 18px;border-radius:7px;font-size:14px;font-weight:700;cursor:pointer;border:1.5px solid var(--primary);background:var(--primary);color:#fff;transition:all .15s;font-family:inherit}
+.btn-accent:hover{background:var(--primary-light)}
+.pt-row{display:grid;grid-template-columns:110px 1fr 210px;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid #f1f5f9}
+.pt-row:last-child{border-bottom:none}
+.pt-label{font-size:12px;font-weight:700;color:var(--primary)}
+.pt-select{font-size:12px;padding:6px 8px;border:1.5px solid var(--border);border-radius:6px;background:#f8fafc;color:var(--text);width:100%}
+/* Sintak legend dinamis */
+.legend-wrap{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+.sl-item{display:flex;align-items:center;gap:6px;font-size:12px;padding:5px 10px;border-radius:6px}
+.sl-badge{font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px}
+/* Pedagogik selector cards */
+.ped-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:4px}
+.ped-card{border:2px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .15s;background:#f8fafc}
+.ped-card:hover{border-color:var(--primary-light);background:#eff6ff}
+.ped-card.selected{border-color:var(--primary);background:#eff6ff}
+.ped-card .ped-title{font-size:13px;font-weight:700;color:var(--primary);margin-bottom:4px}
+.ped-card .ped-sub{font-size:11px;color:var(--text-muted);line-height:1.5}
+.ped-card .ped-tag{display:inline-flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.ped-card .ped-tag span{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;background:#dbeafe;color:#1d4ed8}
+/* result */
+.result-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.loading-bar{height:4px;background:linear-gradient(90deg,var(--primary),var(--accent),var(--primary));background-size:200%;border-radius:3px;animation:loading 1.2s infinite;margin-bottom:12px;display:none}
+.loading-bar.active{display:block}
+@keyframes loading{0%{background-position:0%}100%{background-position:200%}}
+#status-msg{font-size:13px;color:var(--text-muted);margin-top:8px;min-height:18px}
+/* RPPM DOC */
+#rppm-output{background:#fff;border:1px solid #ccc;border-radius:8px;padding:32px 36px;font-family:'Times New Roman',Times,serif;font-size:12pt;line-height:1.5;color:#000;max-height:860px;overflow-y:auto}
+.rppm-kop{text-align:center;margin-bottom:18px}
+.rppm-kop h2{font-size:14pt;font-weight:bold;text-decoration:underline;text-transform:uppercase;margin-bottom:6px}
+.rppm-kop .rppm-ped-label{font-size:11pt;font-style:italic;color:#333;margin-top:2px}
+.rppm-identitas{width:100%;border-collapse:collapse;margin-bottom:20px;font-size:11pt}
+.rppm-identitas td{padding:3px 8px;vertical-align:top}
+.rppm-identitas td:first-child{font-weight:bold;width:200px}
+.rppm-identitas td:nth-child(2){width:16px;text-align:center}
+.rppm-tbl{width:100%;border-collapse:collapse;margin-bottom:16px;font-size:11pt}
+.rppm-tbl td,.rppm-tbl th{border:1px solid #000;padding:6px 10px;vertical-align:top}
+.rppm-sec-header{background:#D6E3BC;font-weight:bold;text-align:center;font-size:11pt;text-decoration:underline;padding:7px 10px}
+.rppm-lbl{font-weight:bold;width:22%;background:#fff;vertical-align:top}
+.rppm-keg-header{background:#FDE9D9;font-weight:bold;text-align:center;font-size:11pt;padding:7px 10px}
+.rppm-inti-header{background:#D6E3BC;font-weight:bold;text-align:center;font-size:10pt;padding:5px 8px}
+.rppm-sintak{font-weight:bold;text-align:center;vertical-align:middle;font-size:10pt;background:#fffde7}
+.rppm-steps{margin:0;padding-left:16px}
+.rppm-steps li{margin-bottom:4px;line-height:1.55}
+.rppm-sub-lbl{font-weight:bold;width:22%;vertical-align:top}
+.rppm-ttd{width:100%;margin-top:24px;border-collapse:collapse;font-size:11pt}
+.rppm-ttd td{padding:4px 16px;vertical-align:top;width:50%}
+.rppm-pt-title{font-weight:bold;font-style:italic;padding:8px 10px;text-align:center;font-size:11pt;border:1px solid #000;background:#EEF2FF}
+.rppm-loading{text-align:center;padding:60px 20px;color:#64748b;font-family:'Segoe UI',sans-serif;font-size:14px}
+.rppm-loading .spinner{display:block;margin:0 auto 12px;width:32px;height:32px;border:3px solid #e2e8f0;border-top-color:var(--primary);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* Panduan tabel */
+.stbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+.stbl th{background:#1a4b8c;color:#fff;padding:8px 10px;font-weight:700;text-align:left}
+.stbl td{padding:7px 10px;border:1px solid #dde3eb;vertical-align:top}
+.stbl tr:nth-child(even) td{background:#f8fafc}
+.stbl .lbl{font-weight:700;color:var(--primary)}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="badge">📄 GENERATOR OFFLINE — MULTI-PEDAGOGIK</div>
+  <h1>🎓 Tools Generator RPPM Fase D</h1>
+  <p>Rencana Pelaksanaan Pembelajaran Mendalam — 6 Pendekatan Pedagogik — 100% Offline, Tanpa API Key</p>
+</div>
+
+<div class="container">
+
+  <div class="info-box green" style="margin-bottom:20px;">
+    ✅ <strong>Mode Offline Penuh</strong> — RPPM dihasilkan langsung dari template cerdas tanpa internet. Pilih pendekatan pedagogik yang sesuai, isi data, lalu klik Generate.
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('form')">📝 Isi Data</div>
+    <div class="tab" onclick="switchTab('panduan')">🗺️ Panduan Pedagogik</div>
+    <div class="tab" onclick="switchTab('hasil')">📄 Hasil RPPM</div>
+  </div>
+
+  <!-- ======== TAB FORM ======== -->
+  <div class="tab-content active" id="tab-form">
+
+    <!-- IDENTITAS -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🏫</span> Identitas Pembelajaran</div>
+      <div class="form-row">
+        <div class="form-group"><label>Nama Sekolah</label><input type="text" id="nama_sekolah" value="SMP Negeri 1 Mojokerto"></div>
+        <div class="form-group">
+          <label>Mata Pelajaran</label>
+          <select id="mapel" onchange="onMapelChange()">
+            <option value="">-- Pilih Mapel --</option>
+            <optgroup label="Bahasa & Sastra">
+              <option>Bahasa Indonesia</option><option>Bahasa Inggris</option><option>Bahasa Jawa / Bahasa Daerah</option>
+            </optgroup>
+            <optgroup label="MIPA">
+              <option>Matematika</option><option>IPA (Sains)</option><option>Fisika</option><option>Kimia</option><option>Biologi</option>
+            </optgroup>
+            <optgroup label="Ilmu Sosial">
+              <option>IPS (Ilmu Pengetahuan Sosial)</option><option>PPKn / Pendidikan Pancasila</option><option>Sejarah</option><option>Geografi</option><option>Ekonomi</option><option>Sosiologi</option>
+            </optgroup>
+            <optgroup label="Seni & Teknologi">
+              <option>Seni Budaya</option><option>Pendidikan Jasmani Olahraga dan Kesehatan (PJOK)</option><option>Informatika</option><option>Prakarya</option>
+            </optgroup>
+            <optgroup label="Agama">
+              <option>Pendidikan Agama Islam dan Budi Pekerti</option><option>Pendidikan Agama Kristen dan Budi Pekerti</option><option>Pendidikan Agama Katolik</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+      <div class="form-row triple">
+        <div class="form-group"><label>Kelas</label><select id="kelas"><option>VII</option><option selected>VIII</option><option>IX</option></select></div>
+        <div class="form-group"><label>Semester</label><select id="semester"><option>Ganjil</option><option selected>Genap</option></select></div>
+        <div class="form-group"><label>Tahun Pelajaran</label><input type="text" id="tahun" value="2025/2026"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Nama Guru &amp; Gelar</label><input type="text" id="guru" value="CIPTO KUSWINADI, S.Pd. M.M"></div>
+        <div class="form-group"><label>Alokasi Waktu <span style="color:#2563b0;font-weight:700;">(otomatis)</span></label><input type="text" id="alokasi" readonly style="background:#eff6ff;border-color:#93c5fd;color:#1e3a5f;font-weight:600;cursor:default;"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Kepala Sekolah &amp; Gelar</label><input type="text" id="kepsek" value="RIZKY ARNAWA, S.Psi"></div>
+        <div class="form-group"><label>NIP Guru</label><input type="text" id="nip_guru" placeholder="Contoh: 196904202000032001"></div>
+      </div>
+    </div>
+
+    <!-- PILIH PEDAGOGIK -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🎯</span> Pilih Pendekatan Pedagogik</div>
+      <div class="info-box purple">
+        <strong>Petunjuk:</strong> Pilih satu pendekatan yang paling sesuai dengan karakteristik mata pelajaran dan tujuan pembelajaran. Setiap pendekatan memiliki sintak (tahapan) yang berbeda dan akan otomatis menyesuaikan format RPPM.
+      </div>
+      <div class="ped-grid" id="ped-grid"><!-- diisi JS --></div>
+      <div id="rekomendasi-box" style="margin-top:12px;display:none;" class="info-box green"></div>
+    </div>
+
+    <!-- MATERI -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📚</span> Materi &amp; Tujuan</div>
+      <div class="form-row single"><div class="form-group"><label>Judul Bab / Tema Utama</label><input type="text" id="judul_bab" placeholder="Contoh: Teks Prosedur / Persamaan Linear / Ekosistem"></div></div>
+      <div class="form-row single"><div class="form-group"><label>Tujuan Pembelajaran Umum</label><textarea id="tujuan" placeholder="Pada akhir pembelajaran bab ini, peserta didik dapat..."></textarea></div></div>
+    </div>
+
+    <!-- PERTEMUAN -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📅</span> Rencana Pertemuan &amp; Sintak</div>
+      <div class="info-box blue"><strong>Petunjuk:</strong> Isi nama subbab/topik setiap pertemuan dan pilih sintak/tahap yang sesuai dengan pendekatan pedagogik yang dipilih.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:16px;">
+        <div class="form-group"><label>Jumlah Pertemuan</label>
+          <select id="jumlah_pertemuan">
+            <option value="1">1 Pertemuan</option><option value="2">2 Pertemuan</option><option value="3">3 Pertemuan</option><option value="4" selected>4 Pertemuan</option><option value="5">5 Pertemuan</option><option value="6">6 Pertemuan</option><option value="7">7 Pertemuan</option><option value="8">8 Pertemuan</option>
+          </select>
+        </div>
+        <div class="form-group"><label>JP per Pertemuan</label>
+          <select id="jp_per_pertemuan"><option value="1">1 JP</option><option value="2" selected>2 JP</option><option value="3">3 JP</option><option value="4">4 JP</option></select>
+        </div>
+        <div class="form-group"><label>Menit per JP</label>
+          <select id="menit_jp"><option value="35">35 menit</option><option value="40" selected>40 menit</option><option value="45">45 menit</option><option value="50">50 menit</option></select>
+        </div>
+      </div>
+      <div id="alokasi_summary" style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;padding:12px 16px;margin-bottom:14px;font-size:13px;color:#14532d;"></div>
+      <div class="legend-wrap" id="sintak-legend"></div>
+      <div id="pertemuan_container"></div>
+    </div>
+
+    <!-- 3M -->
+    <div class="card">
+      <div class="card-title"><span class="icon">✨</span> Kerangka Pedagogik (3M)</div>
+      <div class="chips" id="chips_3m">
+        <div class="chip active" data-v="Mindful Learning">🧘 Mindful Learning</div>
+        <div class="chip active" data-v="Meaningful Learning">💡 Meaningful Learning</div>
+        <div class="chip active" data-v="Joyful Learning">🎉 Joyful Learning</div>
+      </div>
+    </div>
+
+    <!-- PROFIL -->
+    <div class="card">
+      <div class="card-title"><span class="icon">🌟</span> Dimensi Profil Lulusan</div>
+      <div class="chips" id="chips_profil">
+        <div class="chip active" data-v="Beriman dan Bertakwa kepada Tuhan YME">🙏 Beriman &amp; Bertakwa</div>
+        <div class="chip active" data-v="Penalaran Kritis">🔍 Penalaran Kritis</div>
+        <div class="chip active" data-v="Kreativitas">🎨 Kreativitas</div>
+        <div class="chip active" data-v="Kolaborasi">🤝 Kolaborasi</div>
+        <div class="chip active" data-v="Kemandirian">💪 Kemandirian</div>
+        <div class="chip" data-v="Komunikasi">📢 Komunikasi</div>
+        <div class="chip" data-v="Kebhinekaan Global">🌏 Kebhinekaan Global</div>
+      </div>
+    </div>
+
+    <!-- ASESMEN -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📊</span> Asesmen &amp; Media</div>
+      <div class="form-row">
+        <div class="form-group"><label>Jenis Asesmen</label>
+          <div class="chips" id="chips_asesmen">
+            <div class="chip active" data-v="Formatif">Formatif</div><div class="chip active" data-v="Sumatif">Sumatif</div><div class="chip" data-v="Portofolio">Portofolio</div><div class="chip" data-v="Proyek">Proyek</div>
+          </div>
+        </div>
+        <div class="form-group"><label>Model Pembelajaran</label>
+          <select id="model"><option>Discovery Learning</option><option>Problem Based Learning (PBL)</option><option>Project Based Learning (PjBL)</option><option>Inquiry Learning</option><option>Cooperative Learning</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Media Pembelajaran</label><textarea id="media" rows="2">LKPD, PPT interaktif, Video pembelajaran, Buku Siswa</textarea></div>
+        <div class="form-group"><label>Sumber Belajar</label><textarea id="sumber" rows="2">Buku Siswa Kemdikbud, Perpustakaan Sekolah</textarea></div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="buatRPPM()">⚡ Generate RPPM (Offline)</button>
+    <div id="status-msg"></div>
+  </div>
+
+  <!-- ======== TAB PANDUAN ======== -->
+  <div class="tab-content" id="tab-panduan">
+    <div class="card">
+      <div class="card-title"><span class="icon">🗺️</span> Panduan 6 Pendekatan Pedagogik</div>
+      <div class="info-box">Setiap pendekatan pedagogik memiliki sintak (tahapan kegiatan inti) yang berbeda. Pilih yang paling sesuai dengan karakteristik mata pelajaran, tujuan, dan gaya belajar siswa.</div>
+
+      <table class="stbl" style="margin-bottom:20px;">
+        <tr><th colspan="3">1. PEDAGOGIK GENRE (PG) — Bahasa Indonesia, Inggris, Daerah</th></tr>
+        <tr><td class="lbl">Fokus</td><td colspan="2">Membangun kemampuan literasi teks melalui pemahaman genre/jenis teks secara bertahap</td></tr>
+        <tr><td class="lbl">BKoF</td><td colspan="2">Building Knowledge of Field — Membangun konteks, kosakata, dan pengetahuan latar</td></tr>
+        <tr><td class="lbl">MoT</td><td colspan="2">Modelling of Text — Menelaah dan menganalisis model teks secara mendalam</td></tr>
+        <tr><td class="lbl">JCoT</td><td colspan="2">Joint Construction — Mengonstruksi teks baru secara terbimbing bersama</td></tr>
+        <tr><td class="lbl">ICoT</td><td colspan="2">Independent Construction — Memproduksi teks secara mandiri</td></tr>
+        <tr><td class="lbl">LRT</td><td colspan="2">Linking Related Texts — Menghubungkan dengan konteks/teks lain yang relevan</td></tr>
+      </table>
+
+      <table class="stbl" style="margin-bottom:20px;">
+        <tr><th colspan="3">2. PEMBELAJARAN BERBASIS INKUIRI (PBI) — IPA, Fisika, Kimia, Biologi, IPS</th></tr>
+        <tr><td class="lbl">Fokus</td><td colspan="2">Membangun kemampuan ilmiah melalui investigasi, eksperimen, dan penemuan terbimbing</td></tr>
+        <tr><td class="lbl">Orientasi</td><td colspan="2">Membangun pertanyaan ilmiah dan rasa ingin tahu tentang fenomena</td></tr>
+        <tr><td class="lbl">Merumuskan</td><td colspan="2">Merumuskan hipotesis, variabel, dan prosedur penyelidikan</td></tr>
+        <tr><td class="lbl">Menyelidiki</td><td colspan="2">Melaksanakan eksperimen/observasi dan mengumpulkan data</td></tr>
+        <tr><td class="lbl">Menganalisis</td><td colspan="2">Mengolah data, menganalisis, dan menyimpulkan temuan</td></tr>
+        <tr><td class="lbl">Mengomunikasikan</td><td colspan="2">Mempresentasikan dan mendiskusikan hasil penyelidikan</td></tr>
+      </table>
+
+      <table class="stbl" style="margin-bottom:20px;">
+        <tr><th colspan="3">3. PEMBELAJARAN BERBASIS MASALAH (PBM) — Matematika, IPA, IPS, PPKn, Informatika</th></tr>
+        <tr><td class="lbl">Fokus</td><td colspan="2">Mengembangkan kemampuan memecahkan masalah kompleks dan berpikir tingkat tinggi (HOTS)</td></tr>
+        <tr><td class="lbl">Orientasi Masalah</td><td colspan="2">Menyajikan masalah kontekstual dan membangun motivasi untuk memecahkannya</td></tr>
+        <tr><td class="lbl">Organisasi Belajar</td><td colspan="2">Mengorganisir strategi, sumber informasi, dan pembagian tugas kelompok</td></tr>
+        <tr><td class="lbl">Investigasi</td><td colspan="2">Menyelidiki, mengumpulkan informasi, dan menganalisis data untuk solusi</td></tr>
+        <tr><td class="lbl">Mengembangkan Karya</td><td colspan="2">Menyusun laporan, produk, atau rekomendasi solusi yang inovatif</td></tr>
+        <tr><td class="lbl">Evaluasi</td><td colspan="2">Mempresentasikan, mengevaluasi, dan merefleksikan proses pemecahan masalah</td></tr>
+      </table>
+
+      <table class="stbl" style="margin-bottom:20px;">
+        <tr><th colspan="3">4. PEMBELAJARAN BERBASIS PROYEK (PBP) — Prakarya, Informatika, Seni Budaya, IPS</th></tr>
+        <tr><td class="lbl">Fokus</td><td colspan="2">Menghasilkan produk/karya nyata melalui proses desain dan kolaborasi tim</td></tr>
+        <tr><td class="lbl">Penentuan Proyek</td><td colspan="2">Menetapkan tema, tujuan, produk akhir, dan kriteria keberhasilan proyek</td></tr>
+        <tr><td class="lbl">Perencanaan</td><td colspan="2">Merancang jadwal, pembagian peran, dan langkah-langkah pengerjaan proyek</td></tr>
+        <tr><td class="lbl">Pengerjaan</td><td colspan="2">Melaksanakan proses pembuatan/pengembangan produk/karya proyek</td></tr>
+        <tr><td class="lbl">Monitoring</td><td colspan="2">Memantau kemajuan proyek, mengatasi hambatan, dan menyesuaikan rencana</td></tr>
+        <tr><td class="lbl">Presentasi &amp; Evaluasi</td><td colspan="2">Mempublikasikan hasil proyek dan melakukan evaluasi serta refleksi proses</td></tr>
+      </table>
+
+      <table class="stbl" style="margin-bottom:20px;">
+        <tr><th colspan="3">5. PENDIDIKAN NILAI &amp; KARAKTER (PNK) — PAI, PAK, Katolik, PPKn, Seni Budaya</th></tr>
+        <tr><td class="lbl">Fokus</td><td colspan="2">Internalisasi nilai-nilai moral, spiritual, dan karakter melalui refleksi dan praktik</td></tr>
+        <tr><td class="lbl">Membangun Kesadaran</td><td colspan="2">Membangun kesadaran tentang nilai/ajaran dan relevansinya dengan kehidupan</td></tr>
+        <tr><td class="lbl">Eksplorasi Nilai</td><td colspan="2">Mengkaji nilai melalui teks, kisah, diskusi, dan analisis kasus nyata</td></tr>
+        <tr><td class="lbl">Internalisasi</td><td colspan="2">Menginternalisasi nilai melalui refleksi personal dan diskusi kelompok</td></tr>
+        <tr><td class="lbl">Aktualisasi</td><td colspan="2">Mengaktualisasikan nilai dalam tindakan, karya, atau komitmen nyata</td></tr>
+        <tr><td class="lbl">Evaluasi Diri</td><td colspan="2">Mengevaluasi pertumbuhan karakter dan merencanakan pengembangan berkelanjutan</td></tr>
+      </table>
+
+      <table class="stbl">
+        <tr><th colspan="3">6. PEMBELAJARAN BERBASIS KETERAMPILAN GERAK (PKG) — PJOK</th></tr>
+        <tr><td class="lbl">Fokus</td><td colspan="2">Mengembangkan keterampilan motorik, kebugaran, dan sportivitas melalui praktik</td></tr>
+        <tr><td class="lbl">Membangun Konsep</td><td colspan="2">Membangun pengetahuan tentang teknik, peraturan, dan prinsip gerakan</td></tr>
+        <tr><td class="lbl">Demonstrasi Model</td><td colspan="2">Mengamati demonstrasi teknik yang benar dan menganalisis gerakannya</td></tr>
+        <tr><td class="lbl">Latihan Terbimbing</td><td colspan="2">Berlatih teknik secara bertahap dengan panduan dan umpan balik guru</td></tr>
+        <tr><td class="lbl">Penerapan &amp; Bermain</td><td colspan="2">Menerapkan teknik dalam situasi permainan/perlombaan yang sesungguhnya</td></tr>
+        <tr><td class="lbl">Refleksi &amp; Kebugaran</td><td colspan="2">Merefleksikan performa, menghubungkan dengan kesehatan dan gaya hidup aktif</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- ======== TAB HASIL ======== -->
+  <div class="tab-content" id="tab-hasil">
+    <div class="card">
+      <div class="card-title"><span class="icon">📄</span> Hasil RPPM — Format Matriks Dokumen</div>
+      <div class="loading-bar" id="loading_bar"></div>
+      <div id="rppm-output">
+        <div class="rppm-loading"><span class="spinner"></span>Isi form lalu tekan <strong>⚡ Generate RPPM</strong> untuk menghasilkan dokumen.</div>
+      </div>
+      <div id="rppm-save-info" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:9px 14px;margin-top:10px;font-size:13px;color:#14532d;"></div>
+      <div class="result-actions" style="margin-top:10px;">
+        <button class="btn-accent" onclick="exportWord()">📝 Unduh Word (.doc)</button>
+        <button class="btn-accent" style="background:#dc2626;border-color:#dc2626;" onclick="exportPDF()">📄 Simpan PDF</button>
+        <button class="btn-accent" style="background:#15803d;border-color:#15803d;" onclick="salinTeks()">📋 Salin Teks</button>
+        <button class="btn-secondary" onclick="muatRPPMTersimpan()">📂 Muat Tersimpan</button>
+        <button class="btn-secondary" onclick="resetAll()">🔄 Buat Baru</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+// DATA PENDEKATAN PEDAGOGIK
+// ═══════════════════════════════════════════════════════════════════
+const PEDAGOGIK = {
+
+  // ── 1. PEDAGOGIK GENRE ─────────────────────────────────────────
+  genre: {
+    id: 'genre', nama: 'Pedagogik Genre', singkat: 'PG',
+    icon: '📖', warna: '#1d4ed8', bgWarna: '#dbeafe',
+    deskripsi: 'Membangun literasi teks secara bertahap: konteks → model → kolaborasi → mandiri → koneksi',
+    rekomendasiMapel: ['Bahasa Indonesia','Bahasa Inggris','Bahasa Jawa / Bahasa Daerah'],
+    sintak: [
+      { id:'bkof', kode:'BKoF', nama:'Membangun Konteks & Pengetahuan', warna:'#1d4ed8', bg:'#dbeafe' },
+      { id:'mot',  kode:'MoT',  nama:'Menelaah Model Teks', warna:'#15803d', bg:'#dcfce7' },
+      { id:'jcot', kode:'JCoT', nama:'Konstruksi Teks Bersama', warna:'#854d0e', bg:'#fef9c3' },
+      { id:'icot', kode:'ICoT', nama:'Produksi Teks Mandiri', warna:'#9d174d', bg:'#fce7f3' },
+      { id:'lrt',  kode:'LRT',  nama:'Menghubungkan Teks Lain', warna:'#6b21a8', bg:'#f3e8ff' },
+    ],
+    getKeg: (id, mapel, sub, idx) => kegGenre(id, mapel, sub, idx),
+  },
+
+  // ── 2. BERBASIS INKUIRI ────────────────────────────────────────
+  inkuiri: {
+    id: 'inkuiri', nama: 'Inkuiri Ilmiah', singkat: 'PBI',
+    icon: '🔬', warna: '#0369a1', bgWarna: '#e0f2fe',
+    deskripsi: 'Membangun kemampuan ilmiah: orientasi → merumuskan → menyelidiki → analisis → komunikasi',
+    rekomendasiMapel: ['IPA (Sains)','Fisika','Kimia','Biologi','Matematika','IPS (Ilmu Pengetahuan Sosial)','Geografi'],
+    sintak: [
+      { id:'ori',  kode:'Orientasi',        nama:'Orientasi Masalah & Fenomena', warna:'#0369a1', bg:'#e0f2fe' },
+      { id:'rum',  kode:'Merumuskan',       nama:'Merumuskan Hipotesis', warna:'#0f766e', bg:'#ccfbf1' },
+      { id:'sel',  kode:'Menyelidiki',      nama:'Menyelidiki & Mengumpulkan Data', warna:'#7c3aed', bg:'#ede9fe' },
+      { id:'ana',  kode:'Menganalisis',     nama:'Menganalisis & Menyimpulkan', warna:'#b45309', bg:'#fef3c7' },
+      { id:'kom',  kode:'Mengomunikasikan', nama:'Mengomunikasikan Temuan', warna:'#be123c', bg:'#ffe4e6' },
+    ],
+    getKeg: (id, mapel, sub, idx) => kegInkuiri(id, mapel, sub, idx),
+  },
+
+  // ── 3. BERBASIS MASALAH ────────────────────────────────────────
+  masalah: {
+    id: 'masalah', nama: 'Pembelajaran Berbasis Masalah', singkat: 'PBM',
+    icon: '🧩', warna: '#15803d', bgWarna: '#dcfce7',
+    deskripsi: 'Memecahkan masalah kontekstual: orientasi → organisasi → investigasi → karya → evaluasi',
+    rekomendasiMapel: ['Matematika','IPA (Sains)','IPS (Ilmu Pengetahuan Sosial)','Ekonomi','PPKn / Pendidikan Pancasila','Informatika','Sosiologi'],
+    sintak: [
+      { id:'orm',  kode:'Orientasi Masalah', nama:'Orientasi pada Masalah', warna:'#15803d', bg:'#dcfce7' },
+      { id:'org',  kode:'Organisasi',        nama:'Organisasi Strategi & Tim', warna:'#0284c7', bg:'#e0f2fe' },
+      { id:'inv',  kode:'Investigasi',       nama:'Investigasi & Analisis Data', warna:'#7c3aed', bg:'#ede9fe' },
+      { id:'kar',  kode:'Mengembangkan',     nama:'Mengembangkan Karya/Solusi', warna:'#c2410c', bg:'#ffedd5' },
+      { id:'eva',  kode:'Evaluasi',          nama:'Presentasi & Evaluasi', warna:'#be123c', bg:'#ffe4e6' },
+    ],
+    getKeg: (id, mapel, sub, idx) => kegMasalah(id, mapel, sub, idx),
+  },
+
+  // ── 4. BERBASIS PROYEK ─────────────────────────────────────────
+  proyek: {
+    id: 'proyek', nama: 'Pembelajaran Berbasis Proyek', singkat: 'PBP',
+    icon: '🛠️', warna: '#b45309', bgWarna: '#fef3c7',
+    deskripsi: 'Menghasilkan produk nyata: penentuan → perencanaan → pengerjaan → monitoring → presentasi',
+    rekomendasiMapel: ['Prakarya','Informatika','Seni Budaya','IPS (Ilmu Pengetahuan Sosial)','Bahasa Indonesia','Bahasa Inggris'],
+    sintak: [
+      { id:'pen',  kode:'Penentuan',   nama:'Penentuan Proyek & Produk', warna:'#b45309', bg:'#fef3c7' },
+      { id:'prc',  kode:'Perencanaan', nama:'Perencanaan & Desain', warna:'#0369a1', bg:'#e0f2fe' },
+      { id:'prj',  kode:'Pengerjaan',  nama:'Pengerjaan & Produksi', warna:'#15803d', bg:'#dcfce7' },
+      { id:'mon',  kode:'Monitoring',  nama:'Monitoring & Revisi', warna:'#7c3aed', bg:'#ede9fe' },
+      { id:'pub',  kode:'Publikasi',   nama:'Presentasi & Evaluasi Proyek', warna:'#be123c', bg:'#ffe4e6' },
+    ],
+    getKeg: (id, mapel, sub, idx) => kegProyek(id, mapel, sub, idx),
+  },
+
+  // ── 5. PENDIDIKAN NILAI & KARAKTER ────────────────────────────
+  nilai: {
+    id: 'nilai', nama: 'Pendidikan Nilai & Karakter', singkat: 'PNK',
+    icon: '💎', warna: '#9d174d', bgWarna: '#fce7f3',
+    deskripsi: 'Internalisasi nilai dan karakter: kesadaran → eksplorasi → internalisasi → aktualisasi → evaluasi diri',
+    rekomendasiMapel: ['Pendidikan Agama Islam dan Budi Pekerti','Pendidikan Agama Kristen dan Budi Pekerti','Pendidikan Agama Katolik','PPKn / Pendidikan Pancasila','Seni Budaya','Sosiologi','Sejarah'],
+    sintak: [
+      { id:'kes',  kode:'Membangun Kesadaran', nama:'Membangun Kesadaran Nilai', warna:'#9d174d', bg:'#fce7f3' },
+      { id:'eks',  kode:'Eksplorasi',          nama:'Eksplorasi & Kajian Nilai', warna:'#7c3aed', bg:'#ede9fe' },
+      { id:'int',  kode:'Internalisasi',       nama:'Internalisasi & Refleksi', warna:'#0369a1', bg:'#e0f2fe' },
+      { id:'akt',  kode:'Aktualisasi',         nama:'Aktualisasi dalam Tindakan', warna:'#15803d', bg:'#dcfce7' },
+      { id:'evd',  kode:'Evaluasi Diri',       nama:'Evaluasi Diri & Komitmen', warna:'#b45309', bg:'#fef3c7' },
+    ],
+    getKeg: (id, mapel, sub, idx) => kegNilai(id, mapel, sub, idx),
+  },
+
+  // ── 6. KETERAMPILAN GERAK ──────────────────────────────────────
+  gerak: {
+    id: 'gerak', nama: 'Keterampilan Gerak (PJOK)', singkat: 'PKG',
+    icon: '🏃', warna: '#0f766e', bgWarna: '#ccfbf1',
+    deskripsi: 'Mengembangkan keterampilan motorik: konsep → demonstrasi → latihan → penerapan → refleksi',
+    rekomendasiMapel: ['Pendidikan Jasmani Olahraga dan Kesehatan (PJOK)'],
+    sintak: [
+      { id:'kon',  kode:'Membangun Konsep',  nama:'Membangun Konsep Gerak', warna:'#0f766e', bg:'#ccfbf1' },
+      { id:'dem',  kode:'Demonstrasi',       nama:'Demonstrasi & Analisis Gerak', warna:'#0369a1', bg:'#e0f2fe' },
+      { id:'lat',  kode:'Latihan',           nama:'Latihan Teknik Terbimbing', warna:'#7c3aed', bg:'#ede9fe' },
+      { id:'ter',  kode:'Penerapan',         nama:'Penerapan dalam Permainan', warna:'#15803d', bg:'#dcfce7' },
+      { id:'ref',  kode:'Refleksi',          nama:'Refleksi & Koneksi Kesehatan', warna:'#be123c', bg:'#ffe4e6' },
+    ],
+    getKeg: (id, mapel, sub, idx) => kegGerak(id, mapel, sub, idx),
+  },
+};
+
+// Mapel → pedagogik default
+const MAPEL_DEFAULT_PED = {
+  'Bahasa Indonesia': 'genre', 'Bahasa Inggris': 'genre', 'Bahasa Jawa / Bahasa Daerah': 'genre',
+  'Matematika': 'masalah', 'IPA (Sains)': 'inkuiri', 'Fisika': 'inkuiri', 'Kimia': 'inkuiri', 'Biologi': 'inkuiri',
+  'IPS (Ilmu Pengetahuan Sosial)': 'masalah', 'PPKn / Pendidikan Pancasila': 'nilai',
+  'Sejarah': 'nilai', 'Geografi': 'inkuiri', 'Ekonomi': 'masalah', 'Sosiologi': 'masalah',
+  'Seni Budaya': 'proyek', 'Pendidikan Jasmani Olahraga dan Kesehatan (PJOK)': 'gerak',
+  'Informatika': 'proyek', 'Prakarya': 'proyek',
+  'Pendidikan Agama Islam dan Budi Pekerti': 'nilai',
+  'Pendidikan Agama Kristen dan Budi Pekerti': 'nilai',
+  'Pendidikan Agama Katolik': 'nilai',
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// TEMPLATE KEGIATAN PER PENDEKATAN
+// ═══════════════════════════════════════════════════════════════════
+
+// ── GENRE ──────────────────────────────────────────────────────────
+function kegGenre(id, mapel, sub, idx) {
+  const isBhsIng = mapel === 'Bahasa Inggris';
+  const T = {
+    bkof: [
+      `Guru menampilkan contoh teks ${sub} yang relevan dengan kehidupan siswa dan meminta siswa mengamatinya secara seksama.`,
+      `Siswa membaca teks secara cermat, mencatat kata-kata atau ekspresi baru yang belum dipahami.`,
+      `Guru memandu diskusi konteks sosial, tujuan komunikatif, dan nilai budaya yang terkandung dalam teks.`,
+      `Siswa mencatat kosakata kunci beserta artinya dalam buku catatan dengan contoh kalimat penggunaan.`,
+      `Guru mengajukan pertanyaan pemantik: "Pernahkah kalian menemukan teks ${sub} ini dalam kehidupan sehari-hari?"`,
+      `Siswa mendiskusikan pengalaman mereka berkaitan dengan topik teks secara berpasangan (think-pair-share).`,
+      `Kelas berbagi hasil diskusi; guru merangkum dan memperkuat pemahaman tentang konteks penggunaan teks.`,
+      `Siswa mengidentifikasi struktur umum teks menggunakan LKPD dan membandingkan dengan pengalaman mereka.`,
+      `***Tindak Lanjut:*** Siswa membawa satu contoh teks ${sub} dari media lain untuk dibandingkan pada pertemuan berikutnya.`,
+    ],
+    mot: [
+      `Guru menyajikan teks model berkualitas tinggi sebagai acuan genre "${sub}" yang akan dipelajari.`,
+      `Siswa membaca teks model secara mandiri, menggarisbawahi bagian yang dianggap penting atau menarik.`,
+      `Guru memandu analisis struktur generik teks secara bersama-sama, tahap demi tahap, dengan tanya jawab.`,
+      `Siswa mengisi LKPD analisis teks: mengidentifikasi struktur, fitur bahasa khas, dan tujuan komunikatif.`,
+      `Guru menjelaskan ciri kebahasaan spesifik genre ${sub} dengan contoh langsung dari teks model.`,
+      `Siswa mendiskusikan hasil analisis bersama pasangannya dan saling memberikan masukan yang konstruktif.`,
+      `Beberapa pasangan mempresentasikan hasil analisis mereka; kelas merespons dengan pertanyaan dan komentar.`,
+      `Guru memberikan klarifikasi, penguatan, dan informasi tambahan atas hasil analisis siswa.`,
+      `***Tindak Lanjut:*** Siswa menganalisis satu teks ${sub} lain di rumah menggunakan format LKPD yang sama.`,
+    ],
+    jcot: [
+      `Guru menjelaskan tahapan konstruksi teks bersama yang akan dilakukan dan membagi siswa ke dalam kelompok 4 orang.`,
+      `Kelas bersama menentukan topik, tujuan penulisan, dan sasaran pembaca teks yang akan dibuat bersama.`,
+      `Setiap kelompok melakukan curah gagasan (brainstorming) ide-ide isi teks pada kertas plano atau papan tulis.`,
+      `Guru memfasilitasi penulisan terbimbing dengan memandu pilihan kata, struktur kalimat, dan kohesi teks.`,
+      `Kelompok menyusun draf teks sesuai struktur genre yang telah dipelajari, dengan bimbingan aktif guru.`,
+      `Setiap kelompok membacakan draf mereka; kelompok lain memberikan umpan balik terstruktur (2 pujian, 1 saran).`,
+      `Siswa merevisi draf teks berdasarkan masukan yang diterima dari teman dan guru secara tertulis.`,
+      `Kelompok menyempurnakan draf akhir dan menyiapkan presentasi untuk pertemuan berikutnya.`,
+      `***Tindak Lanjut:*** Setiap anggota kelompok menyusun draf pribadi sebagai latihan mandiri sebelum ICoT.`,
+    ],
+    icot: [
+      `Guru menjelaskan tugas produksi teks mandiri beserta rubrik penilaian yang transparan kepada seluruh siswa.`,
+      `Siswa memilih topik secara mandiri sesuai minat dan pengalaman pribadi yang relevan dengan genre ${sub}.`,
+      `Siswa membuat kerangka tulisan (outline) mencakup seluruh struktur genre yang telah dipelajari.`,
+      `Siswa menulis draf teks secara mandiri dengan memperhatikan struktur generik dan ciri kebahasaan genre.`,
+      `Siswa membaca ulang tulisan mereka dan melakukan penyuntingan mandiri (ejaan, tanda baca, pilihan kata).`,
+      `Beberapa siswa (sukarela) membacakan hasil karya mereka; kelas memberikan apresiasi dan tanggapan.`,
+      `Guru memberikan komentar umum tentang kualitas karya yang dihasilkan dan poin-poin yang perlu ditingkatkan.`,
+      `Siswa mencatat masukan guru dan teman untuk digunakan dalam revisi karya final mereka.`,
+      `***Tindak Lanjut:*** Siswa menyusun karya final yang sudah direvisi untuk dikumpulkan pada pertemuan berikutnya.`,
+    ],
+    lrt: [
+      `Guru menyajikan dua atau tiga teks ${sub} dari konteks, media, dan periode yang berbeda-beda.`,
+      `Siswa membandingkan teks-teks tersebut: persamaan dan perbedaan dalam struktur, gaya bahasa, dan tujuan.`,
+      `Siswa mengisi tabel perbandingan teks pada LKPD yang mencakup aspek struktur, bahasa, dan konteks.`,
+      `Diskusi kelas: bagaimana konteks sosial dan pembaca yang berbeda mempengaruhi pilihan bahasa penulis?`,
+      `Siswa mengevaluasi efektivitas masing-masing teks untuk konteks dan tujuan komunikasinya masing-masing.`,
+      `Siswa menulis refleksi singkat: apa yang mereka pelajari dari membandingkan berbagai versi genre ini?`,
+      `Beberapa siswa berbagi refleksi mereka dan mendiskusikannya secara terbuka bersama kelas.`,
+      `Guru menyimpulkan perbedaan dan persamaan penggunaan genre dalam konteks sosial yang beragam.`,
+      `***Tindak Lanjut:*** Siswa mengumpulkan dua contoh teks ${sub} dari media berbeda untuk portofolio pembelajaran.`,
+    ],
+  };
+  return T[id] || T.bkof;
+}
+
+// ── INKUIRI ────────────────────────────────────────────────────────
+function kegInkuiri(id, mapel, sub, idx) {
+  const isGeo = ['Geografi','IPS (Ilmu Pengetahuan Sosial)'].includes(mapel);
+  const T = {
+    ori: [
+      `Guru menampilkan fenomena alam/sosial yang menakjubkan atau masalah nyata terkait "${sub}" untuk memancing rasa ingin tahu.`,
+      `Siswa mengamati fenomena, mencatat pertanyaan-pertanyaan yang muncul di benaknya secara spontan.`,
+      `Guru memandu siswa merumuskan pertanyaan ilmiah yang spesifik, terukur, dan dapat diselidiki.`,
+      `Kelas mendiskusikan dan memilih pertanyaan utama yang akan menjadi fokus penyelidikan bersama.`,
+      `Siswa mengemukakan dugaan awal (hipotesis) berdasarkan pengetahuan yang sudah mereka miliki.`,
+      `Guru menjelaskan tujuan, prosedur umum, dan aspek keselamatan kegiatan penyelidikan hari ini.`,
+      `Siswa mengidentifikasi variabel bebas, terikat, dan kontrol dari pertanyaan yang akan diselidiki.`,
+      `Guru memberikan waktu untuk siswa bertanya dan memastikan semua siswa memahami prosedur.`,
+      `***Tindak Lanjut:*** Siswa menyiapkan alat-bahan dan membaca prosedur secara mandiri sebelum praktikum.`,
+    ],
+    rum: [
+      `Guru membimbing siswa merumuskan hipotesis yang logis dan dapat diuji secara ilmiah.`,
+      `Siswa mendiskusikan dalam kelompok: variabel apa yang akan diubah, diamati, dan dikendalikan?`,
+      `Kelompok merancang prosedur penyelidikan secara terperinci di lembar kerja yang disediakan.`,
+      `Guru mereview rancangan setiap kelompok dan memberikan masukan perbaikan yang diperlukan.`,
+      `Siswa menyiapkan tabel pengamatan/pengukuran yang sesuai dengan variabel yang diselidiki.`,
+      `Kelompok berdiskusi tentang potensi kesalahan (error) dan cara meminimalisirnya dalam percobaan.`,
+      `Guru memastikan semua kelompok memiliki rancangan yang valid sebelum memulai penyelidikan.`,
+      `Siswa mencatat latar teori yang mendukung hipotesis mereka dari buku referensi.`,
+      `***Tindak Lanjut:*** Setiap siswa menulis latar belakang dan hipotesis pribadi sebelum praktikum dimulai.`,
+    ],
+    sel: [
+      `Siswa melaksanakan penyelidikan/eksperimen sesuai prosedur yang telah dirancang bersama.`,
+      `Guru berkeliling untuk mengamati dan membimbing setiap kelompok agar prosedur berjalan tepat.`,
+      `Siswa mengumpulkan data secara sistematis menggunakan tabel pengamatan yang sudah disiapkan.`,
+      `Kelompok melakukan pengulangan pengukuran minimal 3 kali untuk memastikan keandalan data.`,
+      `Siswa mendokumentasikan proses penyelidikan (catatan, foto, sketsa) sebagai bukti ilmiah.`,
+      `Guru mengajukan pertanyaan kritis selama proses berlangsung untuk merangsang berpikir mendalam.`,
+      `Kelompok memastikan data yang terkumpul cukup dan reliabel sebelum menghentikan percobaan.`,
+      `Siswa merapikan peralatan dan membersihkan area kerja setelah penyelidikan selesai dilakukan.`,
+      `***Tindak Lanjut:*** Kelompok mengolah data mentah dan menyiapkan analisis untuk dibahas di pertemuan berikutnya.`,
+    ],
+    ana: [
+      `Siswa mengolah data mentah: menghitung rata-rata, membuat grafik, atau mengidentifikasi pola.`,
+      `Kelompok mendiskusikan: apakah data mendukung hipotesis? Mengapa ya atau mengapa tidak?`,
+      `Siswa mengidentifikasi anomali data dan mendiskusikan kemungkinan penyebab penyimpangan.`,
+      `Guru memandu proses penarikan kesimpulan berdasarkan data dengan pertanyaan-pertanyaan terarah.`,
+      `Kelompok membandingkan hasil penyelidikan mereka dengan hasil kelompok lain di kelas.`,
+      `Siswa menghubungkan temuan penyelidikan dengan teori atau konsep yang sudah dipelajari sebelumnya.`,
+      `Diskusi kelas: apa implikasi temuan ini untuk kehidupan sehari-hari atau teknologi terkait?`,
+      `Siswa menuliskan kesimpulan ilmiah yang didukung oleh data dalam format yang terstruktur.`,
+      `***Tindak Lanjut:*** Setiap siswa menyusun laporan lengkap hasil penyelidikan secara individu di rumah.`,
+    ],
+    kom: [
+      `Setiap kelompok mempresentasikan hasil penyelidikan: latar belakang, prosedur, data, dan kesimpulan.`,
+      `Kelompok lain mengajukan pertanyaan kritis dan memberikan tanggapan ilmiah yang konstruktif.`,
+      `Guru memfasilitasi diskusi ilmiah kelas dan mengklarifikasi konsep yang masih keliru.`,
+      `Siswa membandingkan kesimpulan antar kelompok dan mendiskusikan perbedaan yang muncul.`,
+      `Kelas merumuskan kesimpulan bersama berdasarkan seluruh data dari semua kelompok.`,
+      `Guru menghubungkan temuan siswa dengan pengetahuan ilmiah yang lebih luas dan aplikasinya.`,
+      `Siswa merefleksikan proses inkuiri: apa yang berjalan baik dan apa yang perlu diperbaiki?`,
+      `Guru memberikan penguatan konsep kunci dan meluruskan miskonsepsi yang muncul dalam diskusi.`,
+      `***Tindak Lanjut:*** Siswa menyempurnakan laporan berdasarkan masukan presentasi dan mengumpulkannya.`,
+    ],
+  };
+  return T[id] || T.ori;
+}
+
+// ── BERBASIS MASALAH ───────────────────────────────────────────────
+function kegMasalah(id, mapel, sub, idx) {
+  const T = {
+    orm: [
+      `Guru menyajikan masalah kontekstual yang nyata, relevan, dan menantang terkait "${sub}" kepada siswa.`,
+      `Siswa membaca/mengamati masalah secara seksama dan mengidentifikasi komponen-komponen masalah.`,
+      `Guru mengajukan pertanyaan yang memancing rasa ingin tahu: "Apa yang terjadi jika masalah ini tidak diselesaikan?"`,
+      `Siswa mendiskusikan dalam kelompok kecil: apa yang sudah mereka ketahui dan apa yang perlu dicari tahu?`,
+      `Kelompok membuat daftar "What We Know" dan "What We Need to Know" secara terstruktur.`,
+      `Guru memastikan semua siswa memahami masalah dan termotivasi untuk mencari solusinya.`,
+      `Siswa membuat pernyataan masalah yang jelas, spesifik, dan terfokus secara tertulis.`,
+      `Guru menjelaskan ekspektasi produk akhir dan rubrik penilaian yang akan digunakan.`,
+      `***Tindak Lanjut:*** Setiap kelompok mengumpulkan informasi awal tentang masalah sebelum pertemuan berikutnya.`,
+    ],
+    org: [
+      `Guru memfasilitasi pembentukan kelompok kerja dengan pembagian peran yang jelas dan setara.`,
+      `Kelompok mendiskusikan strategi pemecahan masalah dan membuat rencana kerja yang terperinci.`,
+      `Setiap anggota kelompok mendapat tugas spesifik sesuai kekuatan dan minat masing-masing.`,
+      `Kelompok mengidentifikasi sumber informasi yang dibutuhkan dan cara mengaksesnya secara efisien.`,
+      `Guru mereview rencana kerja setiap kelompok dan memberikan masukan perbaikan yang tepat.`,
+      `Siswa menetapkan target dan tenggat waktu untuk setiap tahapan pemecahan masalah.`,
+      `Kelompok mendiskusikan potensi hambatan dan strategi untuk mengatasinya secara proaktif.`,
+      `Siswa mulai mengumpulkan informasi sesuai pembagian tugas yang sudah disepakati bersama.`,
+      `***Tindak Lanjut:*** Setiap anggota mengerjakan bagian tugas informasi mereka sebelum pertemuan investigasi.`,
+    ],
+    inv: [
+      `Kelompok mengintegrasikan informasi yang telah dikumpulkan dari berbagai anggota secara sistematis.`,
+      `Siswa menganalisis data/informasi menggunakan kerangka konseptual yang relevan dengan masalah.`,
+      `Kelompok mendiskusikan berbagai alternatif solusi beserta kelebihan dan kekurangan masing-masing.`,
+      `Guru memfasilitasi dengan pertanyaan: "Apa bukti yang mendukung solusi ini? Apa risikonya?"`,
+      `Siswa mengevaluasi solusi alternatif berdasarkan kriteria yang telah ditetapkan sebelumnya.`,
+      `Kelompok memilih solusi terbaik dan menyusun argumen ilmiah yang mendukung pilihan tersebut.`,
+      `Guru memberikan bimbingan untuk memastikan solusi yang dipilih logis, feasible, dan beralasan.`,
+      `Siswa mulai menyusun kerangka presentasi/laporan solusi yang akan dipresentasikan.`,
+      `***Tindak Lanjut:*** Kelompok menyusun draf laporan/produk solusi untuk disempurnakan pada pertemuan berikutnya.`,
+    ],
+    kar: [
+      `Kelompok menyusun laporan, produk, atau rekomendasi solusi yang komprehensif dan terperinci.`,
+      `Siswa merancang cara penyajian yang menarik: infografis, poster, presentasi, video, atau prototipe.`,
+      `Guru berkeliling memberikan masukan tentang kualitas isi, kejelasan, dan daya tarik penyajian.`,
+      `Kelompok melakukan uji coba presentasi dalam kelompok kecil sebelum presentasi di kelas.`,
+      `Siswa memperbaiki dan menyempurnakan karya berdasarkan masukan dari uji coba internal.`,
+      `Setiap anggota memastikan pemahaman menyeluruh tentang seluruh isi laporan/produk kelompok.`,
+      `Kelompok menyiapkan jawaban untuk pertanyaan yang mungkin muncul dari audiens.`,
+      `Guru memastikan semua kelompok siap untuk sesi presentasi dengan standar kualitas yang baik.`,
+      `***Tindak Lanjut:*** Setiap siswa menyiapkan refleksi pribadi tentang proses pemecahan masalah yang dilalui.`,
+    ],
+    eva: [
+      `Setiap kelompok mempresentasikan solusi masalah ${sub} kepada seluruh kelas secara terstruktur.`,
+      `Kelompok lain memberikan pertanyaan kritis dan umpan balik konstruktif berdasarkan rubrik yang ada.`,
+      `Guru memfasilitasi diskusi tentang kualitas solusi, proses berpikir, dan kedalaman analisis.`,
+      `Kelas mendiskusikan: solusi mana yang paling efektif dan mengapa menurut berbagai perspektif?`,
+      `Guru memberikan penilaian formatif menggunakan rubrik yang transparan dan telah disepakati.`,
+      `Siswa merefleksikan proses pemecahan masalah: apa yang berhasil, apa yang perlu ditingkatkan?`,
+      `Setiap siswa mengisi lembar refleksi diri tentang kontribusi dan pembelajaran yang diperoleh.`,
+      `Guru merangkum pembelajaran kunci dan menghubungkan dengan konsep yang lebih luas.`,
+      `***Tindak Lanjut:*** Siswa mengaplikasikan solusi dalam skala kecil atau menulis esai refleksi mendalam.`,
+    ],
+  };
+  return T[id] || T.orm;
+}
+
+// ── BERBASIS PROYEK ────────────────────────────────────────────────
+function kegProyek(id, mapel, sub, idx) {
+  const T = {
+    pen: [
+      `Guru memperkenalkan proyek "${sub}" dengan menampilkan contoh produk berkualitas yang relevan.`,
+      `Siswa berdiskusi untuk memahami konteks, manfaat, dan tujuan proyek yang akan dikerjakan.`,
+      `Kelas mendiskusikan dan menetapkan kriteria produk/karya akhir yang baik secara bersama-sama.`,
+      `Siswa mengeksplorasi berbagai kemungkinan topik atau fokus proyek yang relevan dengan "${sub}".`,
+      `Kelompok memilih topik proyek yang diminati dan layak dikerjakan dalam waktu yang tersedia.`,
+      `Guru membantu siswa memahami ekspektasi produk akhir dan rubrik penilaian proyek.`,
+      `Siswa mencatat pertanyaan-pertanyaan penting yang perlu dijawab selama proses proyek.`,
+      `Kelas menyepakati aturan kerja kelompok, etika, dan standar kualitas yang akan diterapkan.`,
+      `***Tindak Lanjut:*** Setiap kelompok membuat proposal singkat proyek untuk disetujui guru pada pertemuan berikutnya.`,
+    ],
+    prc: [
+      `Kelompok mempresentasikan proposal proyek kepada guru untuk mendapat persetujuan dan masukan.`,
+      `Guru memberikan umpan balik konstruktif dan siswa merevisi proposal sesuai masukan yang diterima.`,
+      `Kelompok membuat rencana kerja terperinci dengan jadwal, milestone, dan pembagian peran yang jelas.`,
+      `Siswa merancang desain produk/karya: sketsa, wireframe, storyboard, atau prototipe awal.`,
+      `Kelompok mengidentifikasi dan mengumpulkan sumber daya, bahan, dan referensi yang diperlukan.`,
+      `Guru mereview rencana kerja dan memberikan bimbingan tentang alokasi waktu dan sumber daya.`,
+      `Siswa membuat daftar potensi masalah dan strategi mitigasi yang mungkin diperlukan.`,
+      `Kelompok menetapkan cara berkomunikasi dan berkoordinasi selama proses pengerjaan proyek.`,
+      `***Tindak Lanjut:*** Setiap anggota mulai mengerjakan bagian tugas mereka sesuai rencana yang telah disepakati.`,
+    ],
+    prj: [
+      `Siswa mulai mengerjakan proyek "${sub}" sesuai rencana kerja dan pembagian peran yang disepakati.`,
+      `Guru berkeliling memberikan bimbingan teknis, inspirasi, dan motivasi kepada setiap kelompok.`,
+      `Kelompok mengaplikasikan pengetahuan dan keterampilan yang dipelajari dalam pembuatan produk.`,
+      `Siswa mendokumentasikan proses pengerjaan (foto, catatan, jurnal) sebagai bagian dari portofolio.`,
+      `Guru memfasilitasi konsultasi intensif: setiap kelompok mendapat 5-7 menit bimbingan personal.`,
+      `Kelompok melakukan pengujian awal produk dan mencatat temuan untuk penyempurnaan lebih lanjut.`,
+      `Siswa saling mengunjungi pekerjaan kelompok lain dan memberikan masukan peer-to-peer.`,
+      `Guru memastikan semua kelompok berada di jalur yang benar sesuai timeline yang direncanakan.`,
+      `***Tindak Lanjut:*** Setiap kelompok melanjutkan pengerjaan dan mempersiapkan produk untuk sesi monitoring.`,
+    ],
+    mon: [
+      `Guru melakukan sesi monitoring terstruktur: setiap kelompok melaporkan kemajuan proyek.`,
+      `Kelompok menampilkan produk dalam perkembangan dan menerima umpan balik dari guru dan teman.`,
+      `Siswa mengidentifikasi hambatan yang dihadapi dan mendiskusikan solusi bersama kelompok.`,
+      `Guru memberikan bimbingan teknis dan konseptual untuk mengatasi hambatan yang muncul.`,
+      `Kelompok merevisi rencana kerja jika diperlukan berdasarkan kemajuan dan feedback yang diterima.`,
+      `Siswa melakukan penyempurnaan produk berdasarkan masukan dari sesi monitoring bersama.`,
+      `Guru menilai kemajuan menggunakan checklist dan memberikan catatan perkembangan setiap kelompok.`,
+      `Kelompok menetapkan target penyelesaian final dan langkah-langkah konkret untuk mencapainya.`,
+      `***Tindak Lanjut:*** Kelompok menyelesaikan produk final dan mempersiapkan presentasi publikasi yang menarik.`,
+    ],
+    pub: [
+      `Setiap kelompok mempresentasikan/memamerkan produk final proyek "${sub}" kepada seluruh kelas.`,
+      `Audiens (siswa, guru, tamu) memberikan umpan balik menggunakan lembar penilaian peer.`,
+      `Kelompok menjelaskan proses kreatif, tantangan yang dihadapi, dan solusi yang ditemukan.`,
+      `Guru dan siswa mendiskusikan kekuatan dan area pengembangan dari setiap proyek secara konstruktif.`,
+      `Siswa merefleksikan perjalanan proyek: apa yang dipelajari dari proses, bukan hanya produk?`,
+      `Guru memberikan penilaian proyek menggunakan rubrik komprehensif yang transparan.`,
+      `Kelas merayakan pencapaian semua kelompok dan mengapresiasi keunikan setiap produk.`,
+      `Siswa menulis jurnal refleksi tentang pertumbuhan diri selama mengerjakan proyek ini.`,
+      `***Tindak Lanjut:*** Siswa mendokumentasikan produk final dalam portofolio dan merencanakan proyek lanjutan.`,
+    ],
+  };
+  return T[id] || T.pen;
+}
+
+// ── NILAI & KARAKTER ───────────────────────────────────────────────
+function kegNilai(id, mapel, sub, idx) {
+  const isAgama = mapel.includes('Agama');
+  const T = {
+    kes: [
+      `Guru membuka dengan refleksi/renungan tentang makna "${sub}" dalam kehidupan sehari-hari siswa.`,
+      `Guru menyajikan kisah inspiratif, tokoh teladan, atau kasus nyata yang berkaitan dengan nilai "${sub}".`,
+      `Siswa mengamati dan merespons: nilai apa yang paling menonjol dari kisah/kasus yang disajikan?`,
+      `Diskusi kelas: mengapa nilai "${sub}" penting dalam kehidupan bermasyarakat dan berbangsa?`,
+      `Siswa menuliskan pengalaman pribadi yang berkaitan dengan nilai tersebut dalam buku refleksi.`,
+      `Guru membangun rasa empati dan kepekaan siswa terhadap isu nilai yang akan dipelajari.`,
+      `Siswa mengidentifikasi contoh nyata nilai "${sub}" dan contoh pelanggarannya di lingkungan sekitar.`,
+      `Guru menyampaikan tujuan dan relevansi pembelajaran nilai ini bagi pembentukan karakter siswa.`,
+      `***Tindak Lanjut:*** Siswa mengamati satu contoh penerapan nilai "${sub}" dalam kehidupan selama 24 jam ke depan.`,
+    ],
+    eks: [
+      isAgama
+        ? `Guru menyajikan teks keagamaan (ayat, hadis, kitab suci) yang relevan dengan nilai "${sub}" untuk ditelaah.`
+        : `Guru menyajikan berbagai sumber: teks normatif, kasus, berita, dan perspektif berbeda tentang "${sub}".`,
+      `Siswa membaca dan menganalisis teks/kasus secara kritis, mengidentifikasi nilai yang terkandung.`,
+      `Kelompok mendiskusikan: apa makna nilai ini, bagaimana wujudnya dalam tindakan nyata sehari-hari?`,
+      `Guru memandu analisis: mengapa orang terkadang melanggar nilai ini dan apa konsekuensinya?`,
+      `Siswa mengkaji nilai "${sub}" dari berbagai sudut pandang (agama, budaya, hukum, sosial).`,
+      `Debat mini atau diskusi fishbowl tentang dilema moral yang berkaitan dengan nilai "${sub}".`,
+      `Kelompok menyusun definisi operasional nilai "${sub}" versi mereka berdasarkan kajian bersama.`,
+      `Siswa mengisi peta nilai: di mana posisi mereka saat ini dalam penghayatan nilai ini?`,
+      `***Tindak Lanjut:*** Siswa mencari satu referensi tambahan (buku, artikel, tokoh) tentang nilai "${sub}".`,
+    ],
+    int: [
+      `Guru memandu sesi refleksi personal mendalam: "Seberapa jauh nilai ini sudah tertanam dalam diri saya?"`,
+      `Siswa menulis jurnal refleksi pribadi tentang pengalaman mereka dengan nilai "${sub}" selama ini.`,
+      `Kelompok kecil berbagi refleksi dengan suasana yang aman, saling menghormati, dan tidak menghakimi.`,
+      `Guru menyajikan pertanyaan Socrates yang mendorong pemikiran lebih dalam tentang nilai tersebut.`,
+      `Siswa mendiskusikan: apa hambatan terbesar dalam menghayati nilai "${sub}" dalam kehidupan nyata?`,
+      `Guru memfasilitasi role-play atau simulasi situasi yang melibatkan pengambilan keputusan berbasis nilai.`,
+      `Siswa menulis surat kepada diri sendiri tentang komitmen mereka terhadap nilai yang dipelajari.`,
+      `Guru memberikan penguatan spiritual dan motivasional untuk mendorong internalisasi nilai.`,
+      `***Tindak Lanjut:*** Siswa merencanakan satu tindakan konkret yang mencerminkan nilai "${sub}" dalam minggu ini.`,
+    ],
+    akt: [
+      `Siswa mempresentasikan rencana aksi nyata mereka untuk mengaktualisasikan nilai "${sub}".`,
+      `Kelompok merancang proyek sosial mini, kampanye, atau kegiatan nyata berbasis nilai "${sub}".`,
+      `Guru membantu menyempurnakan rencana aksi agar konkret, realistis, dan berdampak positif.`,
+      `Siswa mulai melaksanakan aksi nyata: kegiatan di kelas, sekolah, atau komunitas sekitar.`,
+      `Dokumentasikan proses aksi nyata melalui foto, video, atau catatan jurnal refleksi harian.`,
+      `Kelompok berbagi hasil aksi nyata mereka kepada kelas: apa yang dilakukan dan dampaknya.`,
+      `Siswa menerima umpan balik dari guru dan teman tentang aksi yang telah dilakukan bersama.`,
+      `Guru memberikan apresiasi tulus atas setiap usaha nyata siswa dalam mengaktualisasikan nilai.`,
+      `***Tindak Lanjut:*** Siswa melanjutkan aksi nyata dan mendokumentasikan perkembangan dalam jurnal karakter.`,
+    ],
+    evd: [
+      `Siswa melakukan penilaian diri (self-assessment) menggunakan rubrik karakter yang disediakan.`,
+      `Guru memfasilitasi diskusi: bagaimana nilai "${sub}" telah mengubah cara berpikir dan bertindak siswa?`,
+      `Siswa saling memberikan umpan balik tentang pertumbuhan karakter selama pembelajaran berlangsung.`,
+      `Kelas merayakan kemajuan karakter bersama: setiap siswa berbagi satu perubahan positif yang dialami.`,
+      `Siswa menulis refleksi akhir: perjalanan nilai saya — dari mana saya mulai, di mana saya kini.`,
+      `Guru mendiskusikan tantangan nilai "${sub}" di masa depan dan cara menghadapinya secara bijak.`,
+      `Siswa menetapkan komitmen jangka panjang yang konkret dan terukur untuk terus mengembangkan nilai.`,
+      `Guru menutup dengan pesan inspiratif dan doa/harapan untuk pertumbuhan karakter berkelanjutan.`,
+      `***Tindak Lanjut:*** Siswa menuliskan refleksi akhir dalam jurnal karakter dan berbagi dengan orang tua.`,
+    ],
+  };
+  return T[id] || T.kes;
+}
+
+// ── KETERAMPILAN GERAK ─────────────────────────────────────────────
+function kegGerak(id, mapel, sub, idx) {
+  const T = {
+    kon: [
+      `Guru menjelaskan konsep dasar "${sub}": pengertian, manfaat kesehatan, dan peraturan yang berlaku.`,
+      `Siswa menonton video demonstrasi teknik "${sub}" dan mencatat hal-hal penting yang diamati.`,
+      `Guru mengajukan pertanyaan kritis: "Bagian tubuh mana yang paling banyak digunakan dalam ${sub}?"`,
+      `Siswa mendiskusikan dalam kelompok pengetahuan awal mereka tentang teknik dan strategi ${sub}.`,
+      `Guru menjelaskan prinsip-prinsip biomekanika yang mendasari gerakan yang efisien dan aman.`,
+      `Siswa mengidentifikasi komponen kebugaran jasmani yang dibutuhkan untuk ${sub}.`,
+      `Guru menjelaskan keselamatan dan prosedur pencegahan cedera selama kegiatan berlangsung.`,
+      `Siswa melakukan pemanasan terstruktur yang menyiapkan tubuh untuk kegiatan inti ${sub}.`,
+      `***Tindak Lanjut:*** Siswa mempelajari satu aturan permainan/teknik dari sumber lain untuk dibawa ke pertemuan berikutnya.`,
+    ],
+    dem: [
+      `Guru mendemonstrasikan teknik dasar "${sub}" secara menyeluruh dari berbagai sudut pandang.`,
+      `Siswa mengamati demonstrasi dengan seksama, mencatat tahapan gerakan yang mereka amati.`,
+      `Guru mendemonstrasikan ulang gerakan secara lambat (slow motion) dengan penjelasan verbal.`,
+      `Siswa mengidentifikasi perbedaan teknik yang benar dan yang salah dari contoh yang diberikan.`,
+      `Guru menunjuk beberapa siswa yang sudah mahir untuk membantu mendemonstrasikan gerakan.`,
+      `Diskusi kelas: apa kunci keberhasilan teknik ini? Kesalahan umum apa yang perlu dihindari?`,
+      `Siswa melakukan gerakan di tempat (tanpa berpindah) untuk merasakan sensasi teknik dasar.`,
+      `Guru memberikan petunjuk verbal, visual, dan kinestetik untuk memudahkan pemahaman gerakan.`,
+      `***Tindak Lanjut:*** Siswa berlatih gerakan dasar ${sub} secara mandiri di rumah sebelum latihan terbimbing.`,
+    ],
+    lat: [
+      `Siswa mulai berlatih teknik "${sub}" secara terbimbing dalam formasi yang ditentukan guru.`,
+      `Guru berkeliling, mengobservasi, dan memberikan koreksi teknis individual yang diperlukan.`,
+      `Siswa berlatih secara berpasangan atau kelompok kecil dengan saling memberikan umpan balik.`,
+      `Guru menggunakan pertanyaan: "Apa yang kamu rasakan? Sudah sesuai dengan teknik yang benar?"`,
+      `Siswa melatih komponen gerakan secara terpisah (drill) sebelum digabungkan menjadi gerak utuh.`,
+      `Guru memberikan tantangan progresif: tingkat kesulitan dinaikkan bertahap sesuai kemampuan.`,
+      `Siswa mencatat kemajuan latihan dan hambatan teknis yang perlu mendapat perhatian lebih.`,
+      `Kelas melakukan koreksi bersama berdasarkan kesalahan umum yang paling sering terjadi.`,
+      `***Tindak Lanjut:*** Siswa berlatih mandiri di rumah fokus pada elemen teknik yang masih perlu perbaikan.`,
+    ],
+    ter: [
+      `Guru mengorganisir permainan/perlombaan ${sub} dengan peraturan yang sudah disederhanakan.`,
+      `Siswa menerapkan teknik yang telah dipelajari dalam situasi permainan yang sesungguhnya.`,
+      `Guru berperan sebagai wasit/fasilitator dan mengobservasi penerapan teknik dan sportivitas.`,
+      `Siswa bergantian berperan sebagai wasit/pencatat skor untuk melatih pemahaman peraturan.`,
+      `Guru menghentikan permainan sesekali untuk memberikan coaching teknis situasional yang relevan.`,
+      `Siswa berdiskusi tentang taktik dan strategi yang efektif dalam situasi permainan nyata.`,
+      `Guru menekankan nilai-nilai sportivitas: kejujuran, menghormati lawan, dan fair play.`,
+      `Permainan diakhiri dengan refleksi singkat: teknik apa yang berhasil diterapkan dengan baik?`,
+      `***Tindak Lanjut:*** Siswa berlatih dalam pertandingan informal dan mencatat perkembangan teknis mereka.`,
+    ],
+    ref: [
+      `Siswa melakukan pendinginan (cool down) terstruktur dan peregangan yang dipimpin guru.`,
+      `Diskusi kelas: teknik mana yang paling menantang? Strategi apa yang paling efektif digunakan?`,
+      `Siswa melakukan penilaian diri menggunakan lembar observasi keterampilan yang disediakan.`,
+      `Guru menghubungkan aktivitas "${sub}" dengan manfaat kesehatan fisik dan mental yang konkret.`,
+      `Siswa mendiskusikan: bagaimana kalian bisa terus aktif berolahraga di luar jam sekolah?`,
+      `Guru menyampaikan tips kesehatan: nutrisi, istirahat, dan pemulihan yang tepat setelah berolahraga.`,
+      `Siswa menetapkan target personal: keterampilan spesifik apa yang ingin ditingkatkan minggu ini?`,
+      `Guru memberikan apresiasi atas usaha dan semangat belajar seluruh siswa dalam kegiatan hari ini.`,
+      `***Tindak Lanjut:*** Siswa membuat jurnal aktivitas fisik harian dan menghubungkannya dengan kesehatan tubuh.`,
+    ],
+  };
+  return T[id] || T.kon;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════════
+let pts = [
+  { sub:'Tahap 1', s:'bkof' },
+  { sub:'Tahap 2', s:'mot'  },
+  { sub:'Tahap 3', s:'jcot' },
+  { sub:'Tahap 4', s:'icot' },
+];
+let selectedPed = 'genre';
+let rppmData = null;
+
+// ═══════════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════════
+function escHtml(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmt(s){ return escHtml(s).replace(/\*\*\*(.+?)\*\*\*/g,'<strong>$1</strong>'); }
+function fmtM(s){ return fmt(s).replace(/\n/g,'<br>'); }
+function mkUl(arr){ if(!Array.isArray(arr)||!arr.length) return '—'; return '<ul class="rppm-steps">'+arr.map(x=>'<li>'+fmt(x)+'</li>').join('')+'</ul>'; }
+function chipsVal(id){ return [...document.querySelectorAll('#'+id+' .chip.active')].map(c=>c.dataset.v); }
+
+// ═══════════════════════════════════════════════════════════════════
+// TABS & CHIPS
+// ═══════════════════════════════════════════════════════════════════
+const TAB_NAMES=['form','panduan','hasil'];
+function switchTab(n){
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',TAB_NAMES[i]===n));
+  document.querySelectorAll('.tab-content').forEach((t,i)=>t.classList.toggle('active',TAB_NAMES[i]===n));
+}
+document.addEventListener('click',e=>{ if(e.target.classList.contains('chip')) e.target.classList.toggle('active'); });
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDER PILIHAN PEDAGOGIK
+// ═══════════════════════════════════════════════════════════════════
+function renderPedGrid(){
+  const mapel = document.getElementById('mapel').value;
+  const grid = document.getElementById('ped-grid');
+  grid.innerHTML = Object.values(PEDAGOGIK).map(p => {
+    const isRek = p.rekomendasiMapel.includes(mapel);
+    const isSel = p.id === selectedPed;
+    return `<div class="ped-card${isSel?' selected':''}" onclick="pilihPed('${p.id}')"
+      style="${isSel?'border-color:'+p.warna+';background:'+p.bgWarna+'20;':''}">
+      <div class="ped-title" style="color:${p.warna}">${p.icon} ${p.nama} <span style="font-size:10px;background:${p.bgWarna};color:${p.warna};padding:1px 6px;border-radius:6px;font-weight:800;">${p.singkat}</span>${isRek&&mapel?'<span style="margin-left:4px;font-size:10px;background:#dcfce7;color:#15803d;padding:1px 6px;border-radius:6px;">✓ Rekomendasi</span>':''}</div>
+      <div class="ped-sub">${p.deskripsi}</div>
+      <div class="ped-tag">${p.sintak.map(s=>`<span style="background:${s.bg};color:${s.warna}">${s.kode}</span>`).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+function pilihPed(id){
+  selectedPed = id;
+  // Reset sintak pertemuan ke default
+  const sintak = PEDAGOGIK[id].sintak;
+  pts = pts.map((p,i) => ({ sub: p.sub, s: sintak[i % sintak.length].id }));
+  renderPedGrid();
+  renderLegend();
+  renderPts();
+  tampilRekomendasi();
+}
+
+function tampilRekomendasi(){
+  const mapel = document.getElementById('mapel').value;
+  if(!mapel) return;
+  const ped = PEDAGOGIK[selectedPed];
+  const box = document.getElementById('rekomendasi-box');
+  const isRek = ped.rekomendasiMapel.includes(mapel);
+  box.style.display = 'block';
+  if(isRek){
+    box.className='info-box green';
+    box.innerHTML = `✅ <strong>${ped.icon} ${ped.nama}</strong> sangat sesuai untuk <strong>${mapel}</strong>. Pendekatan ini akan mengoptimalkan pembelajaran sesuai karakteristik mata pelajaran.`;
+  } else {
+    box.className='info-box';
+    box.innerHTML = `⚠️ <strong>${ped.icon} ${ped.nama}</strong> bisa diterapkan untuk <strong>${mapel}</strong>, namun mungkin perlu adaptasi konteks. Pertimbangkan juga: <strong>${Object.values(PEDAGOGIK).filter(p=>p.rekomendasiMapel.includes(mapel)).map(p=>p.icon+' '+p.nama).join(', ')||'semua pendekatan'}</strong>.`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// LEGEND SINTAK DINAMIS
+// ═══════════════════════════════════════════════════════════════════
+function renderLegend(){
+  const sintak = PEDAGOGIK[selectedPed].sintak;
+  document.getElementById('sintak-legend').innerHTML = sintak.map(s=>
+    `<div class="sl-item" style="background:${s.bg}20;"><span class="sl-badge" style="background:${s.bg};color:${s.warna}">${s.kode}</span><span style="color:${s.warna};font-size:12px">${s.nama}</span></div>`
+  ).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// ALOKASI & PERTEMUAN
+// ═══════════════════════════════════════════════════════════════════
+function syncAlokasi(){
+  const jml=parseInt(document.getElementById('jumlah_pertemuan').value)||4;
+  const jp=parseInt(document.getElementById('jp_per_pertemuan').value)||2;
+  const menit=parseInt(document.getElementById('menit_jp').value)||40;
+  const totalM=jml*jp*menit;
+  const jam=Math.floor(totalM/60), sisa=totalM%60;
+  const alok=`${jml} Pertemuan (${jp} x ${menit} menit per pertemuan)`;
+  document.getElementById('alokasi').value=alok;
+  const jamTeks=jam>0?`${jam} jam${sisa>0?' '+sisa+' menit':''}`:totalM+' menit';
+  const el=document.getElementById('alokasi_summary');
+  if(el) el.innerHTML=`✅ <strong>${jml} pertemuan</strong> × <strong>${jp} JP</strong> × <strong>${menit} menit/JP</strong> = <strong>${jml*jp} JP total</strong> (±${jamTeks})`;
+  syncPertemuanRows(jml);
+}
+
+function syncPertemuanRows(jml){
+  const sintak=PEDAGOGIK[selectedPed].sintak;
+  while(pts.length<jml){ const i=pts.length%sintak.length; pts.push({sub:sintak[i].nama, s:sintak[i].id}); }
+  while(pts.length>jml) pts.pop();
+  renderPts();
+}
+
+function renderPts(){
+  const sintak=PEDAGOGIK[selectedPed].sintak;
+  const jp=parseInt(document.getElementById('jp_per_pertemuan').value)||2;
+  const menit=parseInt(document.getElementById('menit_jp').value)||40;
+  const c=document.getElementById('pertemuan_container');
+  c.innerHTML='';
+  pts.forEach((p,i)=>{
+    const row=document.createElement('div'); row.className='pt-row';
+    const opts=sintak.map(s=>`<option value="${s.id}"${p.s===s.id?' selected':''}>${s.kode} — ${s.nama}</option>`).join('');
+    row.innerHTML=`
+      <span class="pt-label">Pertemuan ${i+1}<span style="display:block;font-size:10px;font-weight:500;color:#64748b;">${jp}×${menit} mnt</span></span>
+      <input type="text" value="${escHtml(p.sub)}" placeholder="Nama subbab/topik..." style="font-size:13px;padding:7px 10px;" onchange="pts[${i}].sub=this.value">
+      <select class="pt-select" onchange="pts[${i}].s=this.value">${opts}</select>`;
+    c.appendChild(row);
+  });
+}
+
+function onMapelChange(){
+  const mapel=document.getElementById('mapel').value;
+  const rek=MAPEL_DEFAULT_PED[mapel];
+  if(rek && rek!==selectedPed){ pilihPed(rek); } else { renderPedGrid(); tampilRekomendasi(); }
+  if(!mapel){ document.getElementById('rekomendasi-box').style.display='none'; }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// KONTEN IDENTIFIKASI & DESAIN
+// ═══════════════════════════════════════════════════════════════════
+function buatKontenIdentifikasi(mapel, kelas, judul, ped){
+  const pedNama=PEDAGOGIK[ped].nama;
+  return {
+    peserta_didik:{
+      pengetahuan_awal:`Peserta didik Kelas ${kelas} umumnya telah memiliki pengetahuan dasar ${mapel} dari materi sebelumnya dan pengalaman sehari-hari yang relevan dengan "${judul}".`,
+      keterampilan_dasar:`Siswa telah memiliki keterampilan dasar yang menjadi fondasi pembelajaran "${judul}" melalui pendekatan ${pedNama}, termasuk kemampuan mengamati, berdiskusi, dan mengerjakan tugas terstruktur.`,
+      kesulitan_mungkin:`Kesulitan yang mungkin muncul: memahami konsep abstrak dalam "${judul}", mengaitkan teori dengan konteks nyata, dan mengelola waktu saat mengerjakan tugas secara mandiri maupun kelompok.`,
+      pemahaman_dimiliki:`Peserta didik memiliki pengalaman nyata dari lingkungan keluarga, sekolah, dan masyarakat yang berkaitan dengan "${judul}" sebagai titik tolak pembelajaran bermakna.`,
+    },
+    materi_pembelajaran:{
+      jenis_pengetahuan:`Materi "${judul}" mencakup pengetahuan konseptual (pemahaman prinsip dan konsep), pengetahuan prosedural (langkah-langkah dan teknik), serta pengetahuan metakognitif (strategi belajar efektif).`,
+      relevansi_kehidupan:`Materi "${judul}" sangat relevan karena berkaitan langsung dengan tantangan nyata dalam kehidupan sehari-hari, dunia kerja, dan peran sosial peserta didik sebagai generasi penerus bangsa.`,
+      tingkat_kesulitan:`Materi disusun secara bertahap dari konsep dasar yang mudah dipahami menuju aplikasi yang lebih kompleks, mempertimbangkan keberagaman kemampuan dan gaya belajar peserta didik.`,
+      struktur_materi:`Pembelajaran menggunakan ${pedNama} dengan sintak: ${PEDAGOGIK[ped].sintak.map(s=>s.kode).join(' → ')}, memastikan progression belajar yang sistematis dan terukur.`,
+      integrasi_nilai:`Materi mengintegrasikan nilai-nilai karakter: rasa ingin tahu, disiplin, tanggung jawab, kerja sama, dan semangat belajar sepanjang hayat dalam setiap tahapan kegiatan pembelajaran.`,
+    },
+  };
+}
+
+function buatKontenDesain(mapel, kelas, judul, pts_arr, ped, profil, tigaM){
+  const profilArr=profil.split(', ');
+  const sintak=PEDAGOGIK[ped].sintak;
+  const topikList=pts_arr.map((p,i)=>`Pertemuan ${i+1}: ${p.sub||sintak[i%sintak.length].nama}`);
+  const tujuanList=pts_arr.map((p,i)=>{
+    const s=sintak.find(x=>x.id===p.s)||sintak[i%sintak.length];
+    return {
+      pertemuan:i+1, subbab:p.sub||s.nama,
+      tujuan:[
+        `Peserta didik dapat memahami konsep "${p.sub||s.nama}" melalui kegiatan ${s.nama.toLowerCase()} secara aktif dan kritis.`,
+        `Peserta didik dapat menerapkan pengetahuan "${p.sub||s.nama}" dalam konteks nyata yang relevan dengan kehidupan sehari-hari.`,
+      ]
+    };
+  });
+  return {
+    capaian_pembelajaran:`Pada akhir Fase D (Kelas VII-IX), peserta didik ${mapel} mampu memahami dan menggunakan konsep esensial untuk memecahkan masalah; mengomunikasikan pemahaman secara lisan dan tertulis; berkolaborasi dalam inkuiri dan proyek; serta mengembangkan sikap kritis, kreatif, dan bertanggung jawab.`,
+    tujuan_pembelajaran:tujuanList,
+    topik_pembelajaran:topikList,
+    kerangka_pembelajaran:tigaM.split(', ').map(m=>({
+      praktik:m,
+      uraian:m.includes('Mindful')?`Guru memandu siswa hadir secara penuh dalam setiap tahap ${PEDAGOGIK[ped].nama}, meningkatkan kualitas perhatian dan fokus belajar.`
+            :m.includes('Meaningful')?`Pembelajaran "${judul}" dikaitkan eksplisit dengan kehidupan nyata siswa, menjadikan setiap konsep terasa bermakna dan relevan.`
+            :`Suasana belajar yang menyenangkan diciptakan melalui variasi kegiatan, apresiasi, dan penghargaan atas setiap kemajuan siswa.`
+    })),
+    kemitraan:{
+      sekolah:`Guru berkolaborasi dengan rekan guru ${mapel} untuk merencanakan pembelajaran, memanfaatkan perpustakaan, laboratorium, dan sarana sekolah secara optimal.`,
+      luar_sekolah:`Pembelajaran diperkaya dengan narasumber tamu, kunjungan lapangan, atau referensi dari komunitas dan lembaga yang relevan dengan materi "${judul}".`,
+      orang_tua:`Orang tua mendukung pembelajaran melalui buku penghubung, diskusi di rumah, dan keterlibatan dalam penyelesaian tugas proyek yang ditetapkan guru.`,
+    },
+    lingkungan:{
+      fisik:`Kelas ditata fleksibel mendukung kegiatan ${PEDAGOGIK[ped].nama}: meja kelompok, area presentasi, sudut pajang karya, dan pojok referensi yang mudah diakses.`,
+      virtual:`Pemanfaatan platform digital: Google Classroom untuk distribusi tugas, WhatsApp Group untuk komunikasi, dan media online untuk sumber belajar yang beragam.`,
+      budaya:`Iklim kelas positif: setiap siswa dihargai kontribusinya, kesalahan dipandang sebagai peluang belajar, dan keberanian bertanya serta berpendapat dirayakan bersama.`,
+    },
+    digital:['YouTube Edukasi (youtube.com/education) — video pembelajaran interaktif','Quiziz (quiziz.com) — kuis interaktif untuk asesmen formatif','Canva Edu (canva.com/education) — desain presentasi dan infografis','Google Forms (forms.google.com) — pengumpulan tugas dan asesmen online'],
+    profil_lulusan:profilArr.slice(0,4).map(d=>({
+      dimensi:d,
+      uraian:`Pembelajaran "${judul}" melalui ${PEDAGOGIK[ped].nama} mengembangkan ${d} melalui kegiatan yang menantang siswa berpikir kritis, berkolaborasi, dan merefleksikan nilai-nilai dalam materi.`
+    })),
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// KONTEN PERTEMUAN
+// ═══════════════════════════════════════════════════════════════════
+function buatKontenPertemuan(pt, idx, ped, mapel, judul, jp, menit){
+  const sintak=PEDAGOGIK[ped].sintak;
+  const s=sintak.find(x=>x.id===pt.s)||sintak[idx%sintak.length];
+  const sub=pt.sub||s.nama;
+  const tot=jp*menit;
+  const awal_mnt=Math.round(tot*0.125);
+  const inti_mnt=Math.round(tot*0.75);
+  const penutup_mnt=tot-awal_mnt-inti_mnt;
+  const ptNum=idx+1;
+
+  const pemantikArr=[
+    `Pernahkah kalian mengalami situasi di mana pengetahuan tentang "${sub}" sangat berguna dalam kehidupan?`,
+    `Menurut kalian, mengapa "${sub}" penting untuk dipelajari dan bagaimana hubungannya dengan kehidupan sehari-hari?`,
+    `Jika kalian bisa merancang pengalaman belajar "${sub}" yang ideal, seperti apa yang kalian bayangkan?`,
+    `Apa yang paling ingin kalian temukan atau pahami setelah mempelajari "${sub}" pada hari ini?`,
+    `Bagaimana pengetahuan tentang "${sub}" dapat membantu kalian menyelesaikan masalah nyata di sekitar kalian?`,
+    `Apa tantangan terbesar yang kalian bayangkan saat mempelajari "${sub}"? Bagaimana cara mengatasinya?`,
+    `Jika "${sub}" adalah sebuah perjalanan, di mana titik awal dan kemana tujuan akhirnya?`,
+    `Apa hubungan antara "${sub}" dengan hal-hal yang sudah kalian pelajari sebelumnya di ${mapel}?`,
+  ];
+  const apersepsiArr=[
+    `Guru menghubungkan "${sub}" dengan materi pertemuan sebelumnya dan pengalaman belajar siswa.`,
+    `Guru mengulas sekilas pembelajaran sebelumnya melalui 3 pertanyaan singkat untuk mengaktifkan memori.`,
+    `Siswa menyebutkan tiga hal yang masih diingat dari pertemuan sebelumnya berkaitan dengan ${mapel}.`,
+    `Guru mengaitkan "${sub}" dengan contoh nyata yang ditemui siswa di rumah atau lingkungan sekitar.`,
+  ];
+  const motivasiArr=[
+    `Guru menyampaikan bahwa memahami "${sub}" akan membuka kemampuan baru yang berguna bagi masa depan siswa.`,
+    `Guru berbagi kisah inspiratif tentang bagaimana pengetahuan serupa "${sub}" membantu orang mencapai tujuan.`,
+    `Guru menampilkan fakta menarik dan mengejutkan tentang "${sub}" yang memancing rasa ingin tahu siswa.`,
+    `Guru menegaskan bahwa hari ini siswa akan mencapai kemampuan baru yang konkret dan langsung terasa manfaatnya.`,
+  ];
+
+  const nextSub = idx+1 < pts.length ? pts[idx+1]?.sub||'materi lanjutan' : 'asesmen akhir bab';
+  const rencanaBerikut = idx+1 < pts.length
+    ? `Guru menyampaikan bahwa pertemuan berikutnya akan membahas "${nextSub}" dengan pendekatan yang lebih menantang.`
+    : `Guru menyampaikan bahwa pertemuan berikutnya akan dilaksanakan asesmen sumatif sebagai bukti capaian belajar.`;
+
+  const kegInti = PEDAGOGIK[ped].getKeg(s.id, mapel, sub, idx);
+
+  return {
+    nomor:ptNum, subbab:sub,
+    alokasi:`${jp} x ${menit} menit`,
+    alokasi_awal:`${awal_mnt} menit`,
+    alokasi_inti:`${inti_mnt} menit`,
+    alokasi_penutup:`${penutup_mnt} menit`,
+    sintak_kode:s.kode, sintak_nama:s.nama,
+    sintak_warna:s.warna, sintak_bg:s.bg,
+    pengalaman_belajar:s.nama,
+    kegiatan_awal:{
+      pembukaan:`Guru mengucapkan salam, mengajak berdoa, melakukan presensi, dan memastikan kesiapan belajar seluruh siswa (${awal_mnt} menit).`,
+      orientasi_bermakna:pemantikArr[idx%pemantikArr.length],
+      apersepsi:apersepsiArr[idx%apersepsiArr.length],
+      motivasi:motivasiArr[idx%motivasiArr.length],
+    },
+    kegiatan_inti:kegInti,
+    kegiatan_penutup:{
+      umpan_balik:`Guru memberikan apresiasi atas partisipasi dan usaha seluruh siswa, serta memberikan umpan balik umum tentang pemahaman dan kinerja pada kegiatan hari ini (${penutup_mnt} menit).`,
+      menyimpulkan:`Guru dan siswa bersama menyimpulkan materi "${sub}" yang dipelajari, menegaskan poin kunci, dan mengaitkan dengan tujuan pembelajaran yang telah ditetapkan.`,
+      rencana_selanjutnya:rencanaBerikut,
+    },
+  };
+}
+
+function buatKontenAsesmen(mapel, judul, asmn, ped){
+  const pedNama=PEDAGOGIK[ped].nama;
+  return {
+    diagnostik:`Asesmen diagnostik dilakukan melalui kuis lisan/tertulis singkat di awal pembelajaran untuk mengukur pengetahuan awal siswa tentang "${judul}". Hasil digunakan untuk menyesuaikan strategi ${pedNama}.`,
+    formatif:`Asesmen formatif dilaksanakan sepanjang proses ${pedNama} melalui: (1) observasi partisipasi aktif, (2) penilaian LKPD dan tugas terstruktur, (3) presentasi kelompok. Rubrik: Pemahaman Konsep (1-4), Keterampilan Proses (1-4), Kolaborasi (1-4).`,
+    sumatif:`Asesmen sumatif di akhir bab "${judul}" melalui tes tertulis (pilihan ganda + uraian) dan/atau penilaian produk/unjuk kerja. Kriteria: ketuntasan konsep (40%), aplikasi (35%), komunikasi (25%). KKM: 75.`,
+    observasi_sikap:`Lembar observasi sikap mencakup Profil Lulusan: Kemandirian, Kolaborasi, Penalaran Kritis, dan dimensi lain yang relevan. Skala penilaian: Mulai Berkembang (1) / Berkembang (2) / Sangat Berkembang (3).`,
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MAIN GENERATE
+// ═══════════════════════════════════════════════════════════════════
+function buatRPPM(){
+  const mapelEl=document.getElementById('mapel');
+  const judulEl=document.getElementById('judul_bab');
+  if(!mapelEl.value){ alert('Pilih Mata Pelajaran terlebih dahulu!'); return; }
+  if(!judulEl.value.trim()){ alert('Isi Judul Bab/Tema terlebih dahulu!'); return; }
+
+  const mapel=mapelEl.value, judul=judulEl.value.trim();
+  const sekolah=document.getElementById('nama_sekolah').value||'';
+  const kelas=document.getElementById('kelas').value;
+  const sem=document.getElementById('semester').value;
+  const tahun=document.getElementById('tahun').value;
+  const guru=document.getElementById('guru').value||'[Nama Guru]';
+  const kepsek=document.getElementById('kepsek').value||'[Kepala Sekolah]';
+  const nipGuru=document.getElementById('nip_guru').value||'[NIP]';
+  const alokasi=document.getElementById('alokasi').value;
+  const jp=parseInt(document.getElementById('jp_per_pertemuan').value)||2;
+  const menit=parseInt(document.getElementById('menit_jp').value)||40;
+  const profil=chipsVal('chips_profil').join(', ');
+  const tigaM=chipsVal('chips_3m').join(', ');
+  const asmn=chipsVal('chips_asesmen');
+  const ped=selectedPed;
+
+  switchTab('hasil');
+  const bar=document.getElementById('loading_bar');
+  bar.classList.add('active');
+  document.getElementById('status-msg').textContent='⏳ Menyusun dokumen RPPM...';
+
+  setTimeout(()=>{
+    try{
+      const iden=buatKontenIdentifikasi(mapel,kelas,judul,ped);
+      const desain=buatKontenDesain(mapel,kelas,judul,pts,ped,profil,tigaM);
+      const pertemuanArr=pts.map((p,i)=>buatKontenPertemuan(p,i,ped,mapel,judul,jp,menit));
+      const asesmen=buatKontenAsesmen(mapel,judul,asmn,ped);
+
+      rppmData={
+        identifikasi:{...iden, profil_lulusan:desain.profil_lulusan},
+        desain, pertemuan:pertemuanArr, asesmen, _ped:ped,
+      };
+
+      bar.classList.remove('active');
+      document.getElementById('status-msg').textContent=`✅ RPPM dengan ${PEDAGOGIK[ped].nama} berhasil dibuat!`;
+      renderMatriks(rppmData,{mapel,sekolah,kelas,sem,tahun,guru,kepsek,nipGuru,alokasi,judul,ped});
+      simpanRPPMLokal(rppmData,{mapel,sekolah,kelas,sem,tahun,guru,kepsek,nipGuru,alokasi,judul,ped},
+        document.getElementById('rppm-output').innerHTML);
+    } catch(err){
+      bar.classList.remove('active');
+      document.getElementById('status-msg').textContent='❌ '+err.message;
+      console.error(err);
+    }
+  },300);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RENDER MATRIKS
+// ═══════════════════════════════════════════════════════════════════
+function renderMatriks(d, meta){
+  const{mapel,sekolah,kelas,sem,tahun,guru,kepsek,nipGuru,alokasi,judul,ped}=meta;
+  const out=document.getElementById('rppm-output');
+  const pedObj=PEDAGOGIK[ped];
+  const sintak=pedObj.sintak;
+
+  function lookupSintak(kode){
+    return sintak.find(x=>x.kode===kode||x.id===String(kode).toLowerCase())||sintak[0];
+  }
+
+  let h='';
+  h+=`<div class="rppm-kop"><h2>Rencana Pelaksanaan Pembelajaran Mendalam</h2>
+  <div class="rppm-ped-label">${pedObj.icon} Pendekatan: ${pedObj.nama} (${pedObj.singkat})</div></div>`;
+
+  // Identitas
+  h+='<table class="rppm-identitas">';
+  [['Sekolah',sekolah],['Mata Pelajaran',mapel],['Kelas / Semester',kelas+' / '+sem],
+   ['Alokasi Waktu',alokasi],['Tahun Pelajaran',tahun],['Pendekatan Pedagogik',pedObj.nama]
+  ].forEach(([l,v])=>{ h+=`<tr><td><b>${escHtml(l)}</b></td><td>:</td><td>${escHtml(v)}</td></tr>`; });
+  h+='</table>';
+
+  // IDENTIFIKASI
+  const iden=d.identifikasi||{};
+  const pd2=iden.peserta_didik||{};
+  const mp=iden.materi_pembelajaran||{};
+  const pl=Array.isArray(iden.profil_lulusan)?iden.profil_lulusan:[];
+  h+='<table class="rppm-tbl">';
+  h+='<tr><td class="rppm-sec-header" colspan="2">IDENTIFIKASI</td></tr>';
+  h+=`<tr><td class="rppm-lbl">1.&nbsp;Peserta Didik</td><td>`
+    +`<b>Pengetahuan Awal:</b> ${fmt(pd2.pengetahuan_awal)}<br><br>`
+    +`<b>Keterampilan Dasar:</b> ${fmt(pd2.keterampilan_dasar)}<br><br>`
+    +`<b>Kesulitan yang Mungkin Muncul:</b> ${fmt(pd2.kesulitan_mungkin)}<br><br>`
+    +`<b>Pemahaman yang Sudah Dimiliki:</b> ${fmt(pd2.pemahaman_dimiliki)}</td></tr>`;
+  h+=`<tr><td class="rppm-lbl">2.&nbsp;Materi Pembelajaran</td><td>`
+    +`<b>Jenis Pengetahuan:</b> ${fmt(mp.jenis_pengetahuan)}<br><br>`
+    +`<b>Relevansi Kehidupan Nyata:</b> ${fmt(mp.relevansi_kehidupan)}<br><br>`
+    +`<b>Tingkat Kesulitan:</b> ${fmt(mp.tingkat_kesulitan)}<br><br>`
+    +`<b>Struktur Materi:</b> ${fmt(mp.struktur_materi)}<br><br>`
+    +`<b>Integrasi Nilai dan Karakter:</b> ${fmt(mp.integrasi_nilai)}</td></tr>`;
+  h+=`<tr><td class="rppm-lbl">3.&nbsp;Dimensi Profil Lulusan</td><td>`
+    +(pl.length?pl.map(p=>'<b>'+fmt(p.dimensi||'')+':</b> '+fmt(p.uraian||'')).join('<br><br>'):'—')
+    +'</td></tr></table>';
+
+  // DESAIN
+  const ds=d.desain||{};
+  const tp=Array.isArray(ds.tujuan_pembelajaran)?ds.tujuan_pembelajaran:[];
+  const topik=Array.isArray(ds.topik_pembelajaran)?ds.topik_pembelajaran:[];
+  const krgk=Array.isArray(ds.kerangka_pembelajaran)?ds.kerangka_pembelajaran:[];
+  const km=ds.kemitraan||{};
+  const lg=ds.lingkungan||{};
+  const dig=Array.isArray(ds.digital)?ds.digital:[];
+  h+='<table class="rppm-tbl">';
+  h+='<tr><td class="rppm-sec-header" colspan="2">DESAIN PEMBELAJARAN</td></tr>';
+  h+=`<tr><td class="rppm-lbl">1.&nbsp;Capaian Pembelajaran</td><td>${fmtM(ds.capaian_pembelajaran||'')}</td></tr>`;
+  h+=`<tr><td class="rppm-lbl">2.&nbsp;Tujuan Pembelajaran</td><td>`;
+  tp.forEach(t=>{ const tl=Array.isArray(t.tujuan)?t.tujuan:[];
+    h+=`<b><i>Pertemuan ${escHtml(String(t.pertemuan||''))}${t.subbab?' — '+fmt(t.subbab):''} :</i></b>`;
+    h+=`<ul class="rppm-steps">${tl.map(tj=>'<li>'+fmt(tj)+'</li>').join('')}</ul>`; });
+  if(!tp.length) h+='—';
+  h+=`</td></tr>`;
+  h+=`<tr><td class="rppm-lbl">3.&nbsp;Topik Pembelajaran</td><td>${mkUl(topik)}</td></tr>`;
+  h+=`<tr><td class="rppm-lbl">4.&nbsp;Kerangka Pembelajaran (3M)</td><td>`
+    +(krgk.length?krgk.map(k=>'<b>'+fmt(k.praktik||'')+':</b> '+fmt(k.uraian||'')).join('<br><br>'):'—')
+    +`</td></tr>`;
+  h+=`<tr><td class="rppm-lbl">5.&nbsp;Kemitraan Pembelajaran</td><td>`
+    +`<b>Lingkungan Sekolah:</b> ${fmt(km.sekolah||'')}<br><br>`
+    +`<b>Lingkungan Luar Sekolah:</b> ${fmt(km.luar_sekolah||'')}<br><br>`
+    +`<b>Orang Tua/Wali:</b> ${fmt(km.orang_tua||'')}</td></tr>`;
+  h+=`<tr><td class="rppm-lbl">6.&nbsp;Lingkungan Pembelajaran</td><td>`
+    +`<b>Ruang Fisik:</b> ${fmt(lg.fisik||'')}<br><br>`
+    +`<b>Ruang Virtual:</b> ${fmt(lg.virtual||'')}<br><br>`
+    +`<b>Budaya Belajar:</b> ${fmt(lg.budaya||'')}</td></tr>`;
+  h+=`<tr><td class="rppm-lbl">7.&nbsp;Pemanfaatan Digital</td><td>${mkUl(dig)}</td></tr>`;
+  h+='</table>';
+
+  // LANGKAH
+  h+='<table class="rppm-tbl"><tr><td class="rppm-sec-header" colspan="4">LANGKAH – LANGKAH PEMBELAJARAN</td></tr></table>';
+  const ptArr=Array.isArray(d.pertemuan)?d.pertemuan:[];
+  ptArr.forEach((pt,idx)=>{
+    const sObj=lookupSintak(pt.sintak_kode);
+    const warna=pt.sintak_warna||sObj.warna||'#1a4b8c';
+    const bg=pt.sintak_bg||sObj.bg||'#dbeafe';
+    const ka=pt.kegiatan_awal||{};
+    const kp=pt.kegiatan_penutup||{};
+    const inti=Array.isArray(pt.kegiatan_inti)?pt.kegiatan_inti:[];
+    h+='<table class="rppm-tbl">';
+    h+=`<tr><td colspan="4" class="rppm-pt-title">Pertemuan ${escHtml(String(pt.nomor||idx+1))} (${fmt(pt.alokasi||'')}) : ${fmt(pt.subbab||'')}</td></tr>`;
+    h+=`<tr><td colspan="4" class="rppm-keg-header">KEGIATAN AWAL (${fmt(pt.alokasi_awal||'')})</td></tr>`;
+    [['a.&nbsp;Pembukaan',ka.pembukaan],['b.&nbsp;Orientasi Bermakna',ka.orientasi_bermakna],
+     ['c.&nbsp;Apersepsi Kontekstual',ka.apersepsi],['d.&nbsp;Motivasi Menggembirakan',ka.motivasi]
+    ].forEach(([lbl,val])=>{ h+=`<tr><td class="rppm-sub-lbl" colspan="2" style="width:28%">${lbl}</td><td colspan="2">${fmt(val||'—')}</td></tr>`; });
+    h+=`<tr><td colspan="4" class="rppm-keg-header">KEGIATAN INTI (${fmt(pt.alokasi_inti||'')})</td></tr>`;
+    h+=`<tr><td class="rppm-inti-header" style="width:20%">Pengalaman Belajar</td>`
+      +`<td class="rppm-inti-header" style="width:18%">Sintak Pembelajaran</td>`
+      +`<td class="rppm-inti-header" style="width:12%">Alokasi</td>`
+      +`<td class="rppm-inti-header">Kegiatan Pembelajaran</td></tr>`;
+    h+=`<tr><td style="text-align:center;font-weight:bold;vertical-align:middle;font-size:10pt">${fmt(pt.pengalaman_belajar||'—')}</td>`
+      +`<td style="text-align:center;font-weight:bold;vertical-align:middle;background:${bg};color:${warna};font-size:10pt">${escHtml(pt.sintak_kode||'—')}</td>`
+      +`<td style="text-align:center;vertical-align:middle">${fmt(pt.alokasi_inti||pt.alokasi||'')}</td>`
+      +`<td>${mkUl(inti)}</td></tr>`;
+    h+=`<tr><td colspan="4" class="rppm-keg-header">KEGIATAN PENUTUP (${fmt(pt.alokasi_penutup||'')})</td></tr>`;
+    [['a.&nbsp;Umpan Balik Konstruktif',kp.umpan_balik],
+     ['b.&nbsp;Menyimpulkan Pembelajaran',kp.menyimpulkan],
+     ['c.&nbsp;Perencanaan Selanjutnya',kp.rencana_selanjutnya]
+    ].forEach(([lbl,val])=>{ h+=`<tr><td class="rppm-sub-lbl" colspan="2" style="width:28%">${lbl}</td><td colspan="2">${fmt(val||'—')}</td></tr>`; });
+    h+='</table>';
+  });
+
+  // ASESMEN
+  const as=d.asesmen||{};
+  h+='<table class="rppm-tbl"><tr><td class="rppm-sec-header" colspan="2">ASESMEN</td></tr>';
+  [['Asesmen Diagnostik',as.diagnostik],['Asesmen Formatif',as.formatif],
+   ['Asesmen Sumatif',as.sumatif],['Lembar Observasi Sikap',as.observasi_sikap]
+  ].forEach(([lbl,val])=>{ h+=`<tr><td class="rppm-lbl" style="width:24%">${escHtml(lbl)}</td><td>${fmtM(val||'—')}</td></tr>`; });
+  h+='</table>';
+
+  // TTD
+  const now=new Date();
+  const bln=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][now.getMonth()];
+  const tgl=now.getDate()+' '+bln+' '+now.getFullYear();
+  h+=`<table class="rppm-ttd">`
+    +`<tr><td>Mengetahui,</td><td style="text-align:center">……………, ${tgl}</td></tr>`
+    +`<tr><td>Kepala ${escHtml(sekolah)}</td><td style="text-align:center">Guru Mata Pelajaran</td></tr>`
+    +`<tr><td style="height:72px"></td><td></td></tr>`
+    +`<tr><td><b>${escHtml(kepsek)}</b></td><td style="text-align:center"><b>${escHtml(guru)}</b></td></tr>`
+    +`<tr><td>NIP. ……………………………</td><td style="text-align:center">NIP. ${escHtml(nipGuru)}</td></tr>`
+    +`</table>`;
+  out.innerHTML=h;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// EXPORT WORD & PDF
+// ═══════════════════════════════════════════════════════════════════
+const BASE_CSS=`body{font-family:'Times New Roman',Times,serif;font-size:12pt;margin:2cm;color:#000}
+table{width:100%;border-collapse:collapse;margin-bottom:10pt}
+td,th{border:1pt solid #000;padding:5pt 8pt;vertical-align:top;font-size:11pt}
+.rppm-sec-header{background:#D6E3BC;font-weight:bold;text-align:center;text-decoration:underline}
+.rppm-lbl{font-weight:bold;width:22%;vertical-align:top}
+.rppm-keg-header{background:#FDE9D9;font-weight:bold;text-align:center}
+.rppm-inti-header{background:#D6E3BC;font-weight:bold;text-align:center;font-size:10pt}
+.rppm-sub-lbl{font-weight:bold;width:28%;vertical-align:top}
+.rppm-pt-title{font-weight:bold;font-style:italic;text-align:center;background:#EEF2FF}
+.rppm-ped-label{font-size:11pt;font-style:italic;text-align:center;color:#333}
+.rppm-identitas td,.rppm-ttd td{border:none}
+ul{margin:0;padding-left:14pt}li{margin-bottom:3pt;line-height:1.4}
+.rppm-loading,.spinner{display:none}`;
+
+function exportWord(){
+  if(!rppmData){alert('Belum ada RPPM. Generate terlebih dahulu.');return;}
+  const content=document.getElementById('rppm-output').innerHTML;
+  const judulBab=(document.getElementById('judul_bab').value||'RPPM').replace(/[^a-zA-Z0-9\s]/g,'').trim().replace(/\s+/g,'-');
+  const wordHTML=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8"><meta name=ProgId content=Word.Document>
+<style>@page WordSection1{size:21cm 29.7cm;margin:2cm 2.5cm}div.WordSection1{page:WordSection1}${BASE_CSS}</style>
+</head><body><div class="WordSection1">${content}</div></body></html>`;
+  const blob=new Blob(['\ufeff'+wordHTML],{type:'application/msword;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='RPPM-'+judulBab+'.doc';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),10000);
+}
+
+function exportPDF(){
+  if(!rppmData){alert('Belum ada RPPM. Generate terlebih dahulu.');return;}
+  const content=document.getElementById('rppm-output').innerHTML;
+  const judulBab=document.getElementById('judul_bab').value||'RPPM';
+  const css=BASE_CSS.replace(/margin:2cm/,'margin:0')
+    +`\n.rppm-sec-header{background:#D6E3BC!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}`
+    +`\n.rppm-keg-header{background:#FDE9D9!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}`
+    +`\n.rppm-inti-header{background:#D6E3BC!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}`
+    +`\n.rppm-pt-title{background:#EEF2FF!important;print-color-adjust:exact}`
+    +`\n@page{size:A4;margin:2cm 2.5cm}`;
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>RPPM - ${escHtml(judulBab)}</title><style>${css}</style></head><body>${content}</body></html>`;
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.target='_blank';a.rel='noopener';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  setTimeout(()=>URL.revokeObjectURL(url),30000);
+  setTimeout(()=>alert('Halaman RPPM terbuka di tab baru.\n\nUntuk simpan PDF:\n• Tekan Ctrl+P (Windows) / ⌘+P (Mac)\n• Pilih "Save as PDF"\n• Klik Simpan'),800);
+}
+
+function salinTeks(){
+  if(!rppmData){alert('Belum ada RPPM untuk disalin.');return;}
+  const el=document.getElementById('rppm-output');
+  const tx=el.innerText||el.textContent||'';
+  navigator.clipboard.writeText(tx).then(()=>alert('✅ Teks RPPM berhasil disalin!')).catch(()=>{
+    const r=document.createRange();r.selectNode(el);
+    window.getSelection().removeAllRanges();window.getSelection().addRange(r);
+    document.execCommand('copy');window.getSelection().removeAllRanges();
+    alert('✅ Teks RPPM berhasil disalin!');
+  });
+}
+
+function resetAll(){
+  if(rppmData&&!confirm('Buat RPPM baru? Tampilan akan direset (data tersimpan tetap ada).')) return;
+  switchTab('form');rppmData=null;
+  document.getElementById('rppm-output').innerHTML='<div class="rppm-loading"><span class="spinner"></span>Isi form lalu tekan <strong>⚡ Generate RPPM</strong>.</div>';
+  document.getElementById('status-msg').textContent='';
+  const info=document.getElementById('rppm-save-info');
+  if(info) info.style.display='none';
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// LOCAL STORAGE
+// ═══════════════════════════════════════════════════════════════════
+const LS_DATA='rppm_multi_data_v1', LS_META='rppm_multi_meta_v1', LS_HTML='rppm_multi_html_v1';
+
+function simpanRPPMLokal(data,meta,html){
+  try{
+    localStorage.setItem(LS_DATA,JSON.stringify(data));
+    localStorage.setItem(LS_META,JSON.stringify(meta));
+    localStorage.setItem(LS_HTML,html);
+    const info=document.getElementById('rppm-save-info');
+    if(info){
+      const now=new Date();
+      info.style.display='block';
+      info.innerHTML='💾 RPPM tersimpan otomatis pada '+now.toLocaleDateString('id-ID')+' pukul '
+        +now.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})+'. Dapat dimuat kembali kapan saja meski offline.';
+    }
+  }catch(e){console.warn('localStorage penuh:',e.message);}
+}
+
+function muatRPPMTersimpan(){
+  try{
+    const dataStr=localStorage.getItem(LS_DATA);
+    const metaStr=localStorage.getItem(LS_META);
+    const html=localStorage.getItem(LS_HTML);
+    if(!dataStr||!html){alert('Tidak ada RPPM tersimpan.\nGenerate RPPM terlebih dahulu.');return;}
+    rppmData=JSON.parse(dataStr);
+    const meta=JSON.parse(metaStr||'{}');
+    switchTab('hasil');
+    document.getElementById('rppm-output').innerHTML=html;
+    const info=document.getElementById('rppm-save-info');
+    if(info) info.style.display='block';
+    if(meta.mapel) document.getElementById('mapel').value=meta.mapel;
+    if(meta.sekolah) document.getElementById('nama_sekolah').value=meta.sekolah;
+    if(meta.kelas) document.getElementById('kelas').value=meta.kelas;
+    if(meta.sem) document.getElementById('semester').value=meta.sem;
+    if(meta.tahun) document.getElementById('tahun').value=meta.tahun;
+    if(meta.guru) document.getElementById('guru').value=meta.guru;
+    if(meta.kepsek) document.getElementById('kepsek').value=meta.kepsek;
+    if(meta.judul) document.getElementById('judul_bab').value=meta.judul;
+    if(meta.nipGuru) document.getElementById('nip_guru').value=meta.nipGuru;
+    if(meta.ped){ selectedPed=meta.ped; renderPedGrid(); renderLegend(); renderPts(); }
+  }catch(e){alert('Gagal memuat: '+e.message);}
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  renderPedGrid();
+  renderLegend();
+
+  document.getElementById('mapel').addEventListener('change', onMapelChange);
+  document.getElementById('jumlah_pertemuan').addEventListener('change', syncAlokasi);
+  document.getElementById('jp_per_pertemuan').addEventListener('change', syncAlokasi);
+  document.getElementById('menit_jp').addEventListener('change', syncAlokasi);
+
+  // Inisialisasi pts dengan label sintak awal
+  const sintak0=PEDAGOGIK[selectedPed].sintak;
+  pts=[
+    {sub:sintak0[0].nama, s:sintak0[0].id},
+    {sub:sintak0[1].nama, s:sintak0[1].id},
+    {sub:sintak0[2%sintak0.length].nama, s:sintak0[2%sintak0.length].id},
+    {sub:sintak0[3%sintak0.length].nama, s:sintak0[3%sintak0.length].id},
+  ];
+  syncAlokasi();
+
+  // Cek tersimpan
+  try{
+    if(localStorage.getItem(LS_HTML)){
+      const info=document.getElementById('rppm-save-info');
+      if(info){info.style.display='block';info.innerHTML='💾 Ada RPPM tersimpan. Klik <b>📂 Muat Tersimpan</b> untuk membuka.';}
+    }
+  }catch(e){}
+});
+</script>
+</body>
+</html>
